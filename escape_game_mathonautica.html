@@ -1,0 +1,951 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🚀 Mission Mathonautica</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;900&family=Exo+2:ital,wght@0,300;0,400;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --cyan:#00d4ff;--green:#00ff88;--red:#ff4466;--yellow:#ffd700;
+  --orange:#ff8c00;--purple:#bb44ff;--bg:#030310;--card:rgba(8,8,30,0.82);
+  --border:rgba(255,255,255,0.08);--text:#ccd4ff;--dim:#5a6890;
+  --font-head:'Orbitron',monospace;--font-body:'Exo 2',sans-serif;
+}
+body{background:var(--bg);color:var(--text);font-family:var(--font-body);min-height:100vh;overflow-x:hidden}
+
+/* ── BACKGROUND ── */
+#bg-canvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none}
+.nebula{position:fixed;border-radius:50%;filter:blur(90px);opacity:.12;pointer-events:none;z-index:0;animation:ndrift var(--d,30s) ease-in-out infinite alternate}
+@keyframes ndrift{0%{transform:translate(0,0) scale(1)}100%{transform:translate(var(--tx,50px),var(--ty,30px)) scale(1.08)}}
+
+/* ── SCREENS ── */
+.screen{display:none;position:relative;z-index:1;min-height:100vh}
+.screen.active{display:flex;flex-direction:column;align-items:center}
+.screen.fade-in{animation:fadeUp .45s ease both}
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── GLASS CARD ── */
+.glass{background:var(--card);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid var(--border);border-radius:16px}
+
+/* ── INTRO ── */
+#screen-intro{justify-content:center;padding:40px 20px;text-align:center}
+.rocket-wrap{font-size:68px;animation:rFloat 3.5s ease-in-out infinite;display:inline-block;filter:drop-shadow(0 0 30px rgba(0,212,255,.6))}
+@keyframes rFloat{0%,100%{transform:translateY(0) rotate(-5deg)}50%{transform:translateY(-20px) rotate(5deg)}}
+.game-title{font-family:var(--font-head);font-size:clamp(1.7rem,5.5vw,3rem);font-weight:900;letter-spacing:5px;margin:18px 0 6px;background:linear-gradient(135deg,var(--cyan),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;filter:drop-shadow(0 0 20px rgba(0,212,255,.4))}
+.game-sub{font-size:.82rem;color:var(--dim);letter-spacing:3px;margin-bottom:28px}
+.story-box{padding:22px 24px;max-width:600px;line-height:1.85;margin-bottom:28px;text-align:left}
+.story-box p{margin-bottom:10px;font-size:.92rem}.story-box p:last-child{margin-bottom:0}
+.story-box strong{color:var(--cyan)}
+
+/* ── LEVEL ── */
+#screen-level{padding:50px 20px;text-align:center}
+.screen-title{font-family:var(--font-head);font-size:1.3rem;color:var(--cyan);letter-spacing:3px;margin-bottom:6px}
+.screen-sub{color:var(--dim);margin-bottom:32px;font-size:.88rem}
+.level-cards{display:flex;flex-wrap:wrap;gap:18px;justify-content:center;max-width:860px}
+.lcard{padding:26px 22px;width:258px;cursor:pointer;transition:transform .25s,box-shadow .25s,border-color .25s;text-align:left;border:1px solid var(--border)}
+.lcard:hover{transform:translateY(-7px)}
+.lcard.m:hover{border-color:var(--green);box-shadow:0 12px 40px rgba(0,255,136,.2)}
+.lcard.r:hover{border-color:var(--yellow);box-shadow:0 12px 40px rgba(255,215,0,.2)}
+.lcard.e:hover{border-color:var(--purple);box-shadow:0 12px 40px rgba(187,68,255,.2)}
+.lcard-icon{font-size:2.4rem;margin-bottom:12px}
+.lcard-name{font-family:var(--font-head);font-size:.88rem;font-weight:600;letter-spacing:2px;margin-bottom:8px}
+.lcard.m .lcard-name{color:var(--green)}.lcard.r .lcard-name{color:var(--yellow)}.lcard.e .lcard-name{color:var(--purple)}
+.lcard-tags{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:14px}
+.lcard-tag{background:rgba(255,255,255,.06);border-radius:20px;padding:3px 9px;font-size:.72rem;color:var(--dim)}
+.lcard-btn{width:100%;padding:10px;border:none;border-radius:8px;font-family:var(--font-head);font-size:.72rem;font-weight:600;cursor:pointer;letter-spacing:1px;transition:opacity .2s,transform .15s}
+.lcard-btn:hover{opacity:.88;transform:scale(1.02)}
+.lcard.m .lcard-btn{background:linear-gradient(135deg,#00c875,var(--green));color:#000}
+.lcard.r .lcard-btn{background:linear-gradient(135deg,#e5c000,var(--yellow));color:#000}
+.lcard.e .lcard-btn{background:linear-gradient(135deg,#8822cc,var(--purple));color:#fff}
+
+/* ── HUD ── */
+#hud{position:sticky;top:0;z-index:100;width:100%;background:rgba(3,3,16,.94);border-bottom:1px solid var(--border);padding:10px 20px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;backdrop-filter:blur(10px)}
+#hud-timer{font-family:var(--font-head);font-size:1.1rem;color:var(--cyan);min-width:65px}
+#hud-lvl{padding:3px 12px;border-radius:6px;font-family:var(--font-head);font-size:.72rem;font-weight:600;letter-spacing:2px}
+#hud-lvl.m{background:rgba(0,255,136,.12);color:var(--green);border:1px solid rgba(0,255,136,.4)}
+#hud-lvl.r{background:rgba(255,215,0,.12);color:var(--yellow);border:1px solid rgba(255,215,0,.4)}
+#hud-lvl.e{background:rgba(187,68,255,.12);color:var(--purple);border:1px solid rgba(187,68,255,.4)}
+.prog-wrap{margin-left:auto;display:flex;align-items:center;gap:7px;font-size:.8rem;color:var(--dim)}
+.pdot{width:12px;height:12px;border-radius:50%;border:2px solid rgba(255,255,255,.15);transition:all .4s}
+.pdot.active{border-color:var(--cyan);background:rgba(0,212,255,.25);box-shadow:0 0 8px rgba(0,212,255,.4)}
+.pdot.done{background:var(--green);border-color:var(--green);box-shadow:0 0 10px rgba(0,255,136,.6)}
+
+/* ── GAME ── */
+#screen-game{padding-bottom:70px}
+.gcontent{width:100%;max-width:780px;padding:24px 16px}
+.briefing{padding:18px 20px;margin-bottom:22px;border-left:3px solid var(--cyan)}
+.briefing-title{font-family:var(--font-head);font-size:.78rem;color:var(--cyan);letter-spacing:2px;margin-bottom:6px}
+.briefing p{font-size:.88rem;line-height:1.7}
+
+/* ── STATION CARD ── */
+.scard{margin-bottom:14px;overflow:hidden;transition:border-color .35s,box-shadow .35s,opacity .3s;border:1px solid var(--border)}
+.scard.locked{opacity:.45;pointer-events:none}
+.scard.active{border-color:rgba(0,212,255,.45);box-shadow:0 0 30px rgba(0,212,255,.08)}
+.scard.solved{border-color:rgba(0,255,136,.45);box-shadow:0 0 30px rgba(0,255,136,.08)}
+.scard.unlock-pulse{animation:uPulse .7s ease}
+@keyframes uPulse{0%{box-shadow:0 0 0 0 rgba(0,255,136,.6)}70%{box-shadow:0 0 0 24px rgba(0,255,136,0)}100%{box-shadow:0 0 0 0 rgba(0,255,136,0)}}
+.scard-head{display:flex;align-items:center;padding:15px 18px;cursor:pointer;gap:13px;user-select:none}
+.scard.locked .scard-head{cursor:default}
+.scard-icon{font-size:1.9rem;flex-shrink:0;transition:transform .3s}
+.scard-head:hover .scard-icon{transform:scale(1.12)}
+.scard.locked .scard-head:hover .scard-icon{transform:none}
+.scard-info{flex:1}
+.scard-title{font-family:var(--font-head);font-size:.88rem;font-weight:600;letter-spacing:2px}
+.scard-status{font-size:.76rem;margin-top:4px;display:flex;align-items:center;gap:6px}
+.scard.locked .scard-status{color:var(--orange)}
+.scard.active .scard-status{color:var(--cyan)}
+.scard.solved .scard-status{color:var(--green)}
+.status-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.scard.locked .status-dot{background:var(--orange)}
+.scard.active .status-dot{background:var(--cyan);animation:blink 1.4s ease infinite}
+.scard.solved .status-dot{background:var(--green)}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+.scard-tog{font-size:1rem;color:var(--dim);transition:transform .3s;flex-shrink:0}
+.scard-tog.open{transform:rotate(180deg)}
+.scard-body{display:none;border-top:1px solid var(--border);padding:20px}
+.scard-body.open{display:block;animation:bodyOpen .3s ease both}
+@keyframes bodyOpen{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
+
+/* station story */
+.st-story{border-left:3px solid var(--cyan);padding:11px 15px 11px 16px;margin-bottom:18px;line-height:1.75;font-size:.88rem;background:rgba(0,212,255,.04);border-radius:0 8px 8px 0}
+.st-story strong{color:var(--cyan)}
+
+/* format badge */
+.fmt-badge{display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:20px;font-family:var(--font-head);font-size:.62rem;font-weight:600;letter-spacing:1.5px;margin-bottom:16px}
+.fmt-chain{background:rgba(0,212,255,.1);color:var(--cyan);border:1px solid rgba(0,212,255,.3)}
+.fmt-error{background:rgba(255,140,0,.1);color:var(--orange);border:1px solid rgba(255,140,0,.3)}
+.fmt-cipher{background:rgba(187,68,255,.1);color:var(--purple);border:1px solid rgba(187,68,255,.3)}
+.fmt-sort{background:rgba(255,215,0,.1);color:var(--yellow);border:1px solid rgba(255,215,0,.3)}
+
+/* ─── CHAIN FORMAT ─── */
+.chain-wrap{display:flex;flex-direction:column}
+.chain-step{border-radius:10px;padding:14px 16px;border-left:3px solid rgba(255,255,255,.12);background:rgba(255,255,255,.02);margin-bottom:0}
+.chain-step.linked{border-left-color:var(--cyan)}
+.step-header{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.step-num{font-family:var(--font-head);font-size:.7rem;font-weight:900;color:#000;background:var(--cyan);border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.chain-step.linked .step-num{background:linear-gradient(135deg,var(--cyan),var(--purple))}
+.step-emoji{font-size:1.2rem}
+.step-ziffer{margin-left:auto;font-family:var(--font-head);font-size:.65rem;color:var(--yellow);padding:2px 8px;border:1px solid rgba(255,215,0,.3);border-radius:10px;background:rgba(255,215,0,.07)}
+.step-text{font-size:.88rem;line-height:1.7;margin-bottom:6px}
+.step-text strong{color:var(--cyan)}
+.step-text em{color:var(--yellow);font-style:normal}
+.step-question{font-size:.84rem;color:var(--yellow);font-weight:600;display:flex;align-items:center;gap:6px}
+.chain-arrow{text-align:center;padding:7px 0;position:relative;display:flex;align-items:center;justify-content:center;gap:8px;color:var(--dim);font-size:.75rem}
+.chain-arrow::before,.chain-arrow::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,transparent,rgba(0,212,255,.3))}
+.chain-arrow::after{background:linear-gradient(90deg,rgba(0,212,255,.3),transparent)}
+.chain-arrow span{display:flex;align-items:center;gap:4px;white-space:nowrap}
+
+/* ─── ERROR FORMAT ─── */
+.error-note{background:rgba(255,140,0,.07);border:1px solid rgba(255,140,0,.25);border-radius:8px;padding:10px 14px;margin-bottom:16px;font-size:.82rem;color:var(--orange);line-height:1.6}
+.etable{display:flex;flex-direction:column;gap:8px}
+.erow{background:rgba(255,255,255,.025);border-radius:10px;padding:12px 14px;border-left:3px solid rgba(255,255,255,.1)}
+.erow-top{display:flex;align-items:flex-start;gap:12px}
+.erow-label{font-family:var(--font-head);font-size:.7rem;color:var(--yellow);min-width:22px;padding-top:2px}
+.erow-main{flex:1}
+.erow-task{font-size:.9rem;margin-bottom:5px}
+.erow-task strong{color:var(--orange)}
+.erow-computer{display:flex;align-items:center;gap:6px;font-size:.78rem}
+.comp-tag{color:var(--dim)}
+.comp-val{font-family:var(--font-head);font-size:.82rem;padding:2px 8px;border-radius:5px;background:rgba(255,140,0,.12);color:var(--orange);border:1px solid rgba(255,140,0,.25)}
+.erow-note{font-family:var(--font-head);font-size:.65rem;color:var(--dim);white-space:nowrap;padding-top:2px}
+.erow-reveal{margin-top:6px;font-size:.8rem;display:none;padding:4px 8px;border-radius:5px}
+.erow.was-wrong .erow-reveal{display:block;background:rgba(255,68,102,.08);color:var(--red);border:1px solid rgba(255,68,102,.2)}
+.erow.was-right .erow-reveal{display:block;background:rgba(0,255,136,.06);color:var(--green);border:1px solid rgba(0,255,136,.15)}
+
+/* ─── CIPHER FORMAT ─── */
+.cipher-note{background:rgba(187,68,255,.07);border:1px solid rgba(187,68,255,.25);border-radius:8px;padding:10px 14px;margin-bottom:16px;font-size:.82rem;color:var(--purple);line-height:1.6}
+.ctable{display:flex;flex-direction:column;gap:8px}
+.crow{background:rgba(255,255,255,.025);border-radius:10px;padding:12px 14px;display:grid;grid-template-columns:90px 110px 1fr auto;gap:10px;align-items:center}
+.crow-name{font-family:var(--font-head);font-size:.75rem;font-weight:600;color:var(--purple)}
+.crow-coords{font-size:.88rem;color:var(--cyan);font-family:var(--font-head);font-size:.78rem}
+.crow-formula{font-size:.86rem}
+.crow-note{font-family:var(--font-head);font-size:.62rem;color:var(--dim);white-space:nowrap}
+
+/* ─── SORT FORMAT ─── */
+.sort-note{background:rgba(255,215,0,.07);border:1px solid rgba(255,215,0,.25);border-radius:8px;padding:10px 14px;margin-bottom:16px;font-size:.82rem;color:var(--yellow);line-height:1.6}
+.sort-grid{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:18px}
+.sort-item{background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:10px;padding:14px 18px;text-align:center;min-width:100px;transition:border-color .2s}
+.sort-item:hover{border-color:rgba(255,215,0,.4)}
+.sort-num{font-size:1.6rem;line-height:1}
+.sort-frac{font-family:var(--font-head);font-size:.88rem;color:var(--cyan);margin-top:6px}
+.sort-seq{display:flex;align-items:center;gap:8px;margin-bottom:14px;flex-wrap:wrap}
+.sort-seq span{font-size:.78rem;color:var(--dim)}
+.sort-blank{flex:1;min-width:30px;height:28px;background:rgba(255,215,0,.06);border:1px dashed rgba(255,215,0,.3);border-radius:6px;display:flex;align-items:center;justify-content:center;font-family:var(--font-head);font-size:.75rem;color:rgba(255,215,0,.4)}
+.sort-explain{font-size:.8rem;color:var(--dim);margin-bottom:14px;line-height:1.5}
+
+/* ─── CODE ENTRY ─── */
+.code-section{margin-top:20px;padding-top:18px;border-top:1px solid var(--border)}
+.code-lbl{font-family:var(--font-head);font-size:.68rem;color:var(--dim);margin-bottom:11px;letter-spacing:1.5px}
+.digit-row{display:flex;gap:9px;margin-bottom:14px}
+.digit{width:52px;height:56px;background:rgba(0,0,0,.55);border:2px solid rgba(255,255,255,.12);border-radius:11px;color:var(--cyan);font-size:1.55rem;font-family:var(--font-head);text-align:center;outline:none;transition:all .22s;caret-color:transparent}
+.digit:focus{border-color:var(--cyan);box-shadow:0 0 0 3px rgba(0,212,255,.18),0 0 18px rgba(0,212,255,.25);background:rgba(0,212,255,.05)}
+.digit.err{border-color:var(--red);box-shadow:0 0 12px rgba(255,68,102,.3);animation:shake .4s}
+.digit.ok{border-color:var(--green);box-shadow:0 0 12px rgba(0,255,136,.3)}
+@keyframes shake{0%,100%{transform:translateX(0)}25%,75%{transform:translateX(-6px)}50%{transform:translateX(6px)}}
+.task-note{background:rgba(255,215,0,.06);border:1px solid rgba(255,215,0,.18);border-radius:8px;padding:9px 13px;margin:12px 0;font-size:.8rem;color:rgba(255,215,0,.85);line-height:1.6}
+.btn-row{display:flex;align-items:center;flex-wrap:wrap;gap:9px}
+.btn-unlock{padding:11px 24px;background:transparent;border:2px solid var(--cyan);border-radius:10px;color:var(--cyan);font-family:var(--font-head);font-size:.72rem;font-weight:600;cursor:pointer;letter-spacing:2px;transition:background .2s,color .2s,box-shadow .2s}
+.btn-unlock:hover{background:var(--cyan);color:#000;box-shadow:0 0 20px rgba(0,212,255,.4)}
+.btn-hint{padding:11px 14px;background:transparent;border:1px solid rgba(255,255,255,.12);border-radius:10px;color:var(--dim);font-family:var(--font-body);font-size:.8rem;cursor:pointer;transition:border-color .2s,color .2s}
+.btn-hint:hover{border-color:var(--yellow);color:var(--yellow)}
+.feedback{margin-top:11px;padding:10px 14px;border-radius:8px;font-size:.88rem;display:none;line-height:1.5}
+.feedback.err{display:block;background:rgba(255,68,102,.08);border:1px solid rgba(255,68,102,.3);color:var(--red)}
+.feedback.ok{display:block;background:rgba(0,255,136,.08);border:1px solid rgba(0,255,136,.3);color:var(--green)}
+.hints-box{margin-top:12px;padding:12px 15px;background:rgba(255,215,0,.05);border-radius:8px;border:1px solid rgba(255,215,0,.18);font-size:.83rem;line-height:1.75;color:rgba(255,215,0,.85);display:none}
+.hint-line{margin-bottom:5px}.hint-line:last-child{margin-bottom:0}
+.solved-wrap{text-align:center;padding:20px;animation:fadeUp .35s ease}
+.solved-icon{font-size:2.8rem;animation:pop .4s ease}
+.solved-code{font-family:var(--font-head);font-size:1rem;color:var(--green);margin-top:8px;letter-spacing:3px}
+@keyframes pop{0%{transform:scale(.3)}60%{transform:scale(1.25)}100%{transform:scale(1)}}
+
+/* ─── LAUNCH ─── */
+#area-launch{border:2px solid rgba(255,215,0,.4);padding:26px;text-align:center;display:none;margin-top:4px;box-shadow:0 0 40px rgba(255,215,0,.08)}
+#area-launch.vis{display:block;animation:fadeUp .4s ease}
+.launch-title{font-family:var(--font-head);color:var(--yellow);font-size:1.1rem;letter-spacing:3px;margin-bottom:12px}
+.launch-story{line-height:1.75;margin-bottom:18px;font-size:.9rem}
+.codes-row{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin:16px 0}
+.cchip{background:rgba(0,0,0,.4);border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:10px 18px;text-align:center;min-width:120px}
+.cchip-lbl{font-family:var(--font-head);font-size:.62rem;color:var(--dim);letter-spacing:1px;margin-bottom:5px}
+.cchip-val{font-family:var(--font-head);font-size:1.3rem;color:var(--cyan);letter-spacing:6px}
+.cchip-val .ld{color:var(--yellow)}
+.formula-box{background:rgba(255,215,0,.05);border:1px solid rgba(255,215,0,.25);border-radius:10px;padding:13px 18px;margin:14px 0;font-size:.88rem;line-height:1.9}
+.formula-box strong{color:var(--yellow)}
+.launch-digits{display:flex;gap:10px;justify-content:center;margin:14px 0}
+.btn-launch{padding:13px 36px;background:linear-gradient(135deg,#c8a800,var(--yellow));border:none;border-radius:12px;color:#000;font-family:var(--font-head);font-size:.82rem;font-weight:900;cursor:pointer;letter-spacing:2px;margin-top:12px;transition:transform .2s,box-shadow .2s}
+.btn-launch:hover{transform:scale(1.05);box-shadow:0 0 30px rgba(255,215,0,.4)}
+
+/* ─── SUCCESS ─── */
+#screen-success{justify-content:center;padding:50px 20px;text-align:center}
+.succ-ship{font-size:70px;animation:launchAnim 1.8s ease-in-out infinite;display:inline-block}
+@keyframes launchAnim{0%,100%{transform:translateY(0) rotate(-42deg)}50%{transform:translateY(-28px) rotate(-42deg)}}
+.succ-title{font-family:var(--font-head);font-size:clamp(1.5rem,4.5vw,2.5rem);font-weight:900;background:linear-gradient(135deg,var(--green),var(--cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;letter-spacing:3px;margin:18px 0 10px;filter:drop-shadow(0 0 20px rgba(0,255,136,.4))}
+.succ-msg{line-height:1.8;max-width:480px;margin:0 auto 26px;font-size:.9rem;color:var(--text)}
+.stats-box{padding:20px 32px;display:inline-block;margin-bottom:26px;border:1px solid rgba(0,255,136,.3);box-shadow:0 0 30px rgba(0,255,136,.08)}
+.stat-row{display:flex;gap:26px;justify-content:center;flex-wrap:wrap}
+.stat{text-align:center}
+.stat-val{font-family:var(--font-head);font-size:1.8rem;color:var(--cyan)}
+.stat-lbl{font-size:.72rem;color:var(--dim);letter-spacing:1px;margin-top:4px}
+.btn-restart{margin-top:4px;padding:12px 30px;background:transparent;border:2px solid var(--cyan);border-radius:10px;color:var(--cyan);font-family:var(--font-head);font-size:.75rem;font-weight:600;cursor:pointer;letter-spacing:2px;transition:background .2s,color .2s,box-shadow .2s}
+.btn-restart:hover{background:var(--cyan);color:#000;box-shadow:0 0 20px rgba(0,212,255,.35)}
+.btn-primary{padding:12px 28px;background:linear-gradient(135deg,rgba(0,180,220,1),var(--cyan));border:none;border-radius:10px;color:#000;font-family:var(--font-head);font-size:.78rem;font-weight:700;cursor:pointer;letter-spacing:2px;transition:transform .2s,box-shadow .2s}
+.btn-primary:hover{transform:scale(1.04);box-shadow:0 0 24px rgba(0,212,255,.4)}
+
+/* ─── CONFETTI CANVAS ─── */
+#confetti{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:9999;display:none}
+
+@media(max-width:580px){
+  .crow{grid-template-columns:70px 90px 1fr}
+  .crow-note{display:none}
+  .lcard{width:100%;max-width:320px}
+}
+</style>
+</head>
+<body>
+
+<canvas id="bg-canvas"></canvas>
+<div class="nebula" style="width:700px;height:700px;background:rgba(0,180,255,1);top:-5%;left:-15%;--d:28s;--tx:80px;--ty:50px"></div>
+<div class="nebula" style="width:500px;height:500px;background:rgba(150,30,255,1);bottom:10%;right:-10%;--d:38s;--tx:-70px;--ty:-40px"></div>
+<div class="nebula" style="width:400px;height:400px;background:rgba(0,60,180,1);top:55%;left:35%;--d:44s;--tx:40px;--ty:60px"></div>
+<canvas id="confetti"></canvas>
+
+<!-- ═══════ INTRO ═══════ -->
+<div id="screen-intro" class="screen active">
+  <div class="rocket-wrap">🚀</div>
+  <h1 class="game-title">MISSION MATHONAUTICA</h1>
+  <p class="game-sub">ESCAPE GAME · RATIONALE ZAHLEN · KLASSE 7</p>
+  <div class="story-box glass">
+    <p>Das Raumschiff <strong>Mathonautica</strong> ist auf dem Weg zur Raumstation Zeta-7 – als ein kosmischer Sturm alle Systeme lahmlegt.</p>
+    <p>Navigatorin <strong>Dr. Kira Nova</strong>, Chefingenieur <strong>Max Volt</strong> und Ingenieurin <strong>Luna Park</strong> haben verschlüsselte Notizen hinterlassen. Ihre Berechnungen enthalten die Codes für die drei gesperrten Systeme.</p>
+    <p>Jede Station hat ein anderes Rätselformat. Alle Codes zusammen ergeben den <strong>Startcode</strong> – ohne ihn bleibt das Schiff verloren.</p>
+    <p style="color:var(--yellow)">⏱ Ziel: Alle Systeme in unter 45 Minuten entsperren.</p>
+  </div>
+  <button class="btn-primary" onclick="showScreen('screen-level')">Mission starten →</button>
+</div>
+
+<!-- ═══════ LEVEL ═══════ -->
+<div id="screen-level" class="screen">
+  <div style="padding:50px 20px;text-align:center;width:100%">
+    <h2 class="screen-title">NIVEAU WÄHLEN</h2>
+    <p class="screen-sub">Wähle dein Schwierigkeitsniveau für die Mission</p>
+    <div class="level-cards">
+      <div class="lcard glass m">
+        <div class="lcard-icon">🟢</div>
+        <div class="lcard-name">MINDESTSTANDARD</div>
+        <div class="lcard-tags">
+          <span class="lcard-tag">Ganze Zahlen</span>
+          <span class="lcard-tag">Kettenpuzzle</span>
+          <span class="lcard-tag">Fehlersuche</span>
+        </div>
+        <button class="lcard-btn" onclick="startGame('M')">Niveau M starten</button>
+      </div>
+      <div class="lcard glass r">
+        <div class="lcard-icon">🟡</div>
+        <div class="lcard-name">REGELSTANDARD</div>
+        <div class="lcard-tags">
+          <span class="lcard-tag">Dezimalzahlen</span>
+          <span class="lcard-tag">einfache Brüche</span>
+          <span class="lcard-tag">Temperatur/Raum</span>
+        </div>
+        <button class="lcard-btn" onclick="startGame('R')">Niveau R starten</button>
+      </div>
+      <div class="lcard glass e">
+        <div class="lcard-icon">🔴</div>
+        <div class="lcard-name">EXPERTENSTANDARD</div>
+        <div class="lcard-tags">
+          <span class="lcard-tag">Brüche</span>
+          <span class="lcard-tag">Sortierrätsel</span>
+          <span class="lcard-tag">Kettenrechnung</span>
+        </div>
+        <button class="lcard-btn" onclick="startGame('E')">Niveau E starten</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════ GAME ═══════ -->
+<div id="screen-game" class="screen">
+  <div id="hud">
+    <span style="font-size:1rem">⏱</span>
+    <span id="hud-timer">00:00</span>
+    <span id="hud-lvl" class="m">M</span>
+    <div class="prog-wrap">
+      Systeme <span class="pdot" id="dot1"></span><span class="pdot" id="dot2"></span><span class="pdot" id="dot3"></span>
+    </div>
+  </div>
+  <div class="gcontent">
+    <div class="briefing glass">
+      <div class="briefing-title">📡 MISSIONSSTATUS</div>
+      <p>Drei Systeme sind gesperrt. Jede Station nutzt ein anderes Rätselformat – lies die Aufgaben sorgfältig!</p>
+    </div>
+
+    <!-- ── STATION 1 ── -->
+    <div class="scard glass active" id="card1">
+      <div class="scard-head" onclick="toggleS(1)">
+        <span class="scard-icon">🧭</span>
+        <div class="scard-info">
+          <div class="scard-title">NAVIGATIONSSYSTEM</div>
+          <div class="scard-status"><span class="status-dot"></span><span id="stat1">AKTIV – Rätsel lösen</span></div>
+        </div>
+        <span class="scard-tog open" id="tog1">▼</span>
+      </div>
+      <div class="scard-body open" id="body1">
+        <div class="st-story" id="story1"></div>
+        <div id="fmt1"></div>
+        <div id="tasks1"></div>
+        <div class="task-note" id="tnote1"></div>
+        <div class="code-section">
+          <div class="code-lbl" id="clbl1">🔐 CODE EINGEBEN</div>
+          <div class="digit-row">
+            <input class="digit" maxlength="1" id="d1_1" oninput="nd(this,'d1_2')" onkeydown="kd(event,this,null,'1')">
+            <input class="digit" maxlength="1" id="d1_2" oninput="nd(this,'d1_3')" onkeydown="kd(event,this,'d1_1','1')">
+            <input class="digit" maxlength="1" id="d1_3" oninput="nd(this,'d1_4')" onkeydown="kd(event,this,'d1_2','1')">
+            <input class="digit" maxlength="1" id="d1_4" oninput="nd(this,null)" onkeydown="kd(event,this,'d1_3','1')">
+          </div>
+          <div class="btn-row">
+            <button class="btn-unlock" onclick="checkS(1)">🔓 Entsperren</button>
+            <button class="btn-hint" id="hb1" onclick="showHint(1)">💡 Tipp</button>
+          </div>
+          <div class="feedback" id="fb1"></div>
+          <div class="hints-box" id="hbox1"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── STATION 2 ── -->
+    <div class="scard glass locked" id="card2">
+      <div class="scard-head" onclick="toggleS(2)">
+        <span class="scard-icon">⚡</span>
+        <div class="scard-info">
+          <div class="scard-title">ANTRIEBSSYSTEM</div>
+          <div class="scard-status"><span class="status-dot"></span><span id="stat2">GESPERRT – Navigation zuerst lösen</span></div>
+        </div>
+        <span class="scard-tog" id="tog2">▼</span>
+      </div>
+      <div class="scard-body" id="body2">
+        <div class="st-story" id="story2"></div>
+        <div id="fmt2"></div>
+        <div id="tasks2"></div>
+        <div class="task-note" id="tnote2"></div>
+        <div class="code-section">
+          <div class="code-lbl" id="clbl2">🔐 CODE EINGEBEN</div>
+          <div class="digit-row">
+            <input class="digit" maxlength="1" id="d2_1" oninput="nd(this,'d2_2')" onkeydown="kd(event,this,null,'2')">
+            <input class="digit" maxlength="1" id="d2_2" oninput="nd(this,'d2_3')" onkeydown="kd(event,this,'d2_1','2')">
+            <input class="digit" maxlength="1" id="d2_3" oninput="nd(this,'d2_4')" onkeydown="kd(event,this,'d2_2','2')">
+            <input class="digit" maxlength="1" id="d2_4" oninput="nd(this,null)" onkeydown="kd(event,this,'d2_3','2')">
+          </div>
+          <div class="btn-row">
+            <button class="btn-unlock" onclick="checkS(2)">🔓 Entsperren</button>
+            <button class="btn-hint" id="hb2" onclick="showHint(2)">💡 Tipp</button>
+          </div>
+          <div class="feedback" id="fb2"></div>
+          <div class="hints-box" id="hbox2"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── STATION 3 ── -->
+    <div class="scard glass locked" id="card3">
+      <div class="scard-head" onclick="toggleS(3)">
+        <span class="scard-icon">🔋</span>
+        <div class="scard-info">
+          <div class="scard-title">ENERGIESYSTEM</div>
+          <div class="scard-status"><span class="status-dot"></span><span id="stat3">GESPERRT – Antrieb zuerst lösen</span></div>
+        </div>
+        <span class="scard-tog" id="tog3">▼</span>
+      </div>
+      <div class="scard-body" id="body3">
+        <div class="st-story" id="story3"></div>
+        <div id="fmt3"></div>
+        <div id="tasks3"></div>
+        <div class="task-note" id="tnote3"></div>
+        <div class="code-section">
+          <div class="code-lbl" id="clbl3">🔐 CODE EINGEBEN</div>
+          <div class="digit-row">
+            <input class="digit" maxlength="1" id="d3_1" oninput="nd(this,'d3_2')" onkeydown="kd(event,this,null,'3')">
+            <input class="digit" maxlength="1" id="d3_2" oninput="nd(this,'d3_3')" onkeydown="kd(event,this,'d3_1','3')">
+            <input class="digit" maxlength="1" id="d3_3" oninput="nd(this,'d3_4')" onkeydown="kd(event,this,'d3_2','3')">
+            <input class="digit" maxlength="1" id="d3_4" oninput="nd(this,null)" onkeydown="kd(event,this,'d3_3','3')">
+          </div>
+          <div class="btn-row">
+            <button class="btn-unlock" onclick="checkS(3)">🔓 Entsperren</button>
+            <button class="btn-hint" id="hb3" onclick="showHint(3)">💡 Tipp</button>
+          </div>
+          <div class="feedback" id="fb3"></div>
+          <div class="hints-box" id="hbox3"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── LAUNCH ── -->
+    <div id="area-launch" class="glass">
+      <div class="launch-title">🚀 STARTSEQUENZ</div>
+      <p class="launch-story">Alle Systeme entsperrt! Berechne den <strong style="color:var(--yellow)">geheimen Startcode</strong> aus den letzten Ziffern deiner Codes.</p>
+      <div class="codes-row" id="lcodes"></div>
+      <div class="formula-box" id="lformula"></div>
+      <div style="font-family:var(--font-head);font-size:.68rem;color:var(--dim);margin-top:14px;letter-spacing:1.5px">🔐 STARTCODE (2-STELLIG)</div>
+      <div class="launch-digits">
+        <input class="digit" maxlength="1" id="lc1" oninput="nd(this,'lc2')" onkeydown="kd(event,this,null,'l')" style="width:58px;height:60px;font-size:1.7rem">
+        <input class="digit" maxlength="1" id="lc2" oninput="nd(this,null)" onkeydown="kd(event,this,'lc1','l')" style="width:58px;height:60px;font-size:1.7rem">
+      </div>
+      <button class="btn-launch" onclick="checkLaunch()">🚀 STARTEN!</button>
+      <div class="feedback" id="fbl" style="margin-top:12px;text-align:left"></div>
+      <div class="hints-box" id="hboxl" style="margin-top:10px;text-align:left"></div>
+      <div style="margin-top:10px"><button class="btn-hint" onclick="showLHint()">💡 Tipp</button></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════ SUCCESS ═══════ -->
+<div id="screen-success" class="screen">
+  <div class="succ-ship">🚀</div>
+  <h2 class="succ-title">MISSION ERFÜLLT!</h2>
+  <p class="succ-msg">Die Mathonautica ist gestartet! Alle drei Systeme entsperrt – ausgezeichnete Arbeit, Crew!</p>
+  <div class="stats-box glass">
+    <div class="stat-row">
+      <div class="stat"><div class="stat-val" id="s-time">–</div><div class="stat-lbl">ZEIT</div></div>
+      <div class="stat"><div class="stat-val" id="s-lvl">–</div><div class="stat-lbl">NIVEAU</div></div>
+      <div class="stat"><div class="stat-val" id="s-hints">–</div><div class="stat-lbl">TIPPS</div></div>
+    </div>
+  </div>
+  <button class="btn-restart" onclick="restart()">↩ Nochmal spielen</button>
+</div>
+
+<script>
+// ══════════════════════════════════════
+//  ANIMATED STAR BACKGROUND
+// ══════════════════════════════════════
+(()=>{
+  const c=document.getElementById('bg-canvas'),ctx=c.getContext('2d');
+  let w,h,stars=[];
+  function init(){
+    w=c.width=window.innerWidth;h=c.height=window.innerHeight;
+    stars=Array.from({length:160},()=>({
+      x:Math.random()*w,y:Math.random()*h,
+      r:Math.random()*1.4+.3,
+      a:Math.random(),da:(Math.random()*.008+.002)*(Math.random()<.5?1:-1),
+      s:Math.random()*.4+.05
+    }));
+  }
+  function draw(){
+    ctx.clearRect(0,0,w,h);
+    stars.forEach(s=>{
+      s.a=Math.max(.05,Math.min(1,s.a+s.da));
+      if(s.a>=1||s.a<=.05) s.da*=-1;
+      ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
+      ctx.fillStyle=`rgba(200,210,255,${s.a})`;ctx.fill();
+    });
+    requestAnimationFrame(draw);
+  }
+  window.addEventListener('resize',init);init();draw();
+})();
+
+// ══════════════════════════════════════
+//  GAME DATA
+// ══════════════════════════════════════
+const D={
+M:{label:'M',lc:'m',stations:[
+  {fmt:'chain',icon:'🧭',title:'NAVIGATIONSSYSTEM',
+   story:'Navigatorin Dr. Kira Nova hat die Flugroute Schritt für Schritt berechnet, bevor der Sturm einschlug. Jede Position baut auf der vorherigen auf – verfolge die Kette!',
+   tnote:'ℹ️ Code-Regel: Ist ein Ergebnis negativ → nimm den <strong>Betrag</strong> (z.B. −2 → Ziffer 2). Die Schritte bauen aufeinander auf!',
+   clbl:'🔐 CODE EINGEBEN – Ziffern aus Schritten 1–4',
+   steps:[
+    {e:'🚀',t:'Die <strong>Mathonautica</strong> startet auf Koordinate <strong>−4</strong> der Raumachse. Das Haupttriebwerk zündet und gibt einen Schub von <strong>+9 Einheiten</strong> vorwärts.',q:'Neue Koordinate A = ?',z:'Ziffer 1',linked:false},
+    {e:'☄️',t:'Warnsignal! Ein <strong>Meteoritenschwarm</strong> blockiert den Kurs. Dr. Nova dreht das Schiff und weicht <strong>7 Einheiten</strong> zurück.',q:'Neue Koordinate B = ? → Betrag als Ziffer',z:'Ziffer 2',linked:true},
+    {e:'🔥',t:'Entwarnung! Triebwerk B zündet erneut und schiebt die Mathonautica <strong>8 Einheiten</strong> vorwärts.',q:'Neue Koordinate C = ?',z:'Ziffer 3',linked:true},
+    {e:'📡',t:'Raumstation Zeta-7 sendet ein Notsignal von Koordinate <strong>−7</strong>. Die Signalstärke entspricht dem <strong>Betrag</strong> dieser Koordinate.',q:'Betrag der Signalkoordinate = ?',z:'Ziffer 4',linked:false},
+   ],
+   code:'5267',
+   hints:['💡 Schritt 1: Starte bei −4, addiere +9. Was ergibt −4 + 9?','💡 Schritte 2 und 3 nutzen das Ergebnis des jeweils vorherigen Schritts! Berechne sorgfältig mit Vorzeichen.','💡 Lösungen: A=5, |B|=|−2|=2, C=6, |−7|=7 → Code: 5267']},
+  {fmt:'error',icon:'⚡',title:'ANTRIEBSSYSTEM',
+   story:'Chefingenieur Max Volt hat vier Schubwerte für die Triebwerke berechnet. Der Sonnensturm hat einige Einträge verfälscht! Berechne selbst den richtigen Wert – und gib den Betrag ein.',
+   tnote:'ℹ️ Berechne jeden Wert selbst. Stimmt er mit dem Computer überein? Egal – trage immer dein eigenes (richtiges!) Ergebnis als Betrag ein.',
+   clbl:'🔐 CODE EINGEBEN – Beträge der richtigen Ergebnisse',
+   calcs:[
+    {lbl:'a)',task:'<strong>Triebwerk Alpha:</strong> Kaltstart-Schub <strong>(−5)</strong> plus Nachbrenner <strong>+8</strong>',comp:'4',right:3,wrong:true},
+    {lbl:'b)',task:'<strong>Triebwerk Beta:</strong> Grunddruck <strong>2</strong> plus Gegendruck <strong>(−6)</strong>',comp:'−4',right:4,wrong:false},
+    {lbl:'c)',task:'<strong>Triebwerk Gamma:</strong> Bremsstoß <strong>(−7)</strong> plus Restschub <strong>+1</strong>',comp:'−5',right:6,wrong:true},
+    {lbl:'d)',task:'<strong>Triebwerk Delta:</strong> Rückstoß <strong>(−3)</strong> plus Gegenstoß <strong>(−5)</strong>',comp:'−8',right:8,wrong:false},
+   ],
+   code:'3468',
+   hints:['💡 Überprüfe jeden Wert: (−5)+8 = 3, nicht 4! Der Computer hat bei manchen Werten Fehler gemacht.','💡 b) 2+(−6)=−4 ✓ stimmt. c) (−7)+1=−6, nicht −5! Betrag davon ist 6.','💡 Richtige Beträge: a)3, b)4, c)6, d)8 → Code: 3468']},
+  {fmt:'cipher',icon:'🔋',title:'ENERGIESYSTEM',
+   story:'Ingenieurin Luna Park hat die vier Energiezellen des Reaktors mit Koordinaten gesichert. Die freigesetzte Energie jeder Zelle berechnet sich als Betrag des Produkts ihrer Koordinaten: |x · y|',
+   tnote:'ℹ️ Vorzeichen-Regel: Plus · Minus = Minus, Minus · Minus = Plus. Danach Betrag nehmen!',
+   clbl:'🔐 CODE EINGEBEN – |x · y| für ALPHA bis DELTA',
+   cells:[
+    {n:'ALPHA',x:'−3',y:'2',f:'|(−3) · 2|',r:6},
+    {n:'BETA',x:'4',y:'−2',f:'|4 · (−2)|',r:8},
+    {n:'GAMMA',x:'−3',y:'−3',f:'|(−3) · (−3)|',r:9},
+    {n:'DELTA',x:'−5',y:'1',f:'|(−5) · 1|',r:5},
+   ],
+   code:'6895',
+   hints:['💡 ALPHA: (−3)·2=−6 → Betrag=6. BETA: 4·(−2)=−8 → Betrag=8.','💡 GAMMA: Minus·Minus=Plus! (−3)·(−3)=+9. DELTA: (−5)·1=−5 → Betrag=5.','💡 Ergebnisse: 6,8,9,5 → Code: 6895']}
+ ],finalCode:'20',fHint:'💡 Letzte Ziffern: Code1=...7, Code2=...8, Code3=...5 → 7+8+5 = 20'},
+
+R:{label:'R',lc:'r',stations:[
+  {fmt:'chain',icon:'🧭',title:'NAVIGATIONSSYSTEM',
+   story:'Sonde Kryox-I misst Temperaturen und Positionen auf dem Weg durch das Sonnensystem. Die Messwerte der ersten zwei Schritte sind verknüpft – die späteren sind unabhängig.',
+   tnote:'ℹ️ Code-Regel: Negatives Ergebnis → Betrag als Ziffer. Schritte 1 und 2 bauen aufeinander auf!',
+   clbl:'🔐 CODE EINGEBEN – Ziffern aus allen 4 Messungen',
+   steps:[
+    {e:'🛸',t:'Sonde Kryox-I startet bei Messwert <strong>−2,5</strong> auf der Skala. Ein Sonnenblitz erhöht den Wert schlagartig um <strong>+11,5 Einheiten</strong>.',q:'Neuer Messwert A = ?',z:'Ziffer 1',linked:false},
+    {e:'🌑',t:'Die Sonde taucht in den Planetenschatten ein. Der Messwert sinkt um <strong>12 Einheiten</strong>.',q:'Messwert B = ? → Betrag als Ziffer',z:'Ziffer 2',linked:true},
+    {e:'❄️',t:'Sensor-Beta misst <strong>−1,5°C</strong> in der Wolkenschicht. Ein Kälteeinbruch senkt die Temperatur um weitere <strong>2,5°C</strong>.',q:'Neue Temperatur = ? → Betrag als Ziffer',z:'Ziffer 3',linked:false},
+    {e:'🌡️',t:'Auf Planet Kryox beträgt die Tagestemperatur <strong>+3,5°C</strong> und die Nachttemperatur <strong>−2,5°C</strong>.',q:'Betrag des Temperaturunterschieds = ?',z:'Ziffer 4',linked:false},
+   ],
+   code:'9346',
+   hints:['💡 Schritt 1: −2,5 + 11,5 = 9. Schritt 2 nutzt dieses Ergebnis: 9 − 12 = −3, Betrag=3.','💡 Schritt 3 (unabhängig): −1,5 + (−2,5) = −4, Betrag=4. Schritt 4: |3,5−(−2,5)| = 6.','💡 Lösungen: 9, 3, 4, 6 → Code: 9346']},
+  {fmt:'error',icon:'⚡',title:'ANTRIEBSSYSTEM',
+   story:'Der Antriebscomputer hat bei Dezimalzahlen versagt! Ing. Volts Kursberechnungen enthalten Fehler. Finde die richtigen Werte.',
+   tnote:'ℹ️ Berechne jeden Ausdruck selbst. Dein berechneter Wert (als Betrag) ist die Code-Ziffer – egal was der Computer zeigt.',
+   clbl:'🔐 CODE EINGEBEN – Beträge der richtigen Ergebnisse',
+   calcs:[
+    {lbl:'a)',task:'<strong>Kurskorrektur A:</strong> Schub <strong>(−3,5)</strong> plus Gegenimpuls <strong>+5,5</strong>',comp:'3',right:2,wrong:true},
+    {lbl:'b)',task:'<strong>Kurskorrektur B:</strong> Geschwindigkeit <strong>1,5</strong> plus Bremsverzögerung <strong>(−6,5)</strong>',comp:'−5',right:5,wrong:false},
+    {lbl:'c)',task:'<strong>Kurskorrektur C:</strong> Drift <strong>(−0,5)</strong> plus Quertrieb <strong>(−3,5)</strong>',comp:'−3',right:4,wrong:true},
+    {lbl:'d)',task:'<strong>Kurskorrektur D:</strong> Rückzug <strong>(−4,5)</strong> plus Vorwärtsschub <strong>+7,5</strong>',comp:'4',right:3,wrong:true},
+   ],
+   code:'2543',
+   hints:['💡 a) (−3,5)+5,5=2, nicht 3! b) 1,5+(−6,5)=−5 ✓ stimmt, Betrag=5.','💡 c) (−0,5)+(−3,5)=−4, nicht −3! d) (−4,5)+7,5=3, nicht 4!','💡 Richtige Beträge: 2,5,4,3 → Code: 2543']},
+  {fmt:'cipher',icon:'🔋',title:'ENERGIESYSTEM',
+   story:'Die Reaktorkammern werden mit Bruchkoordinaten verschlüsselt. Berechne für jede Kammer |x · y|.',
+   tnote:'ℹ️ Bruch-Tipp: Multipliziere erst, kürze dann. Minus · Minus = Plus!',
+   clbl:'🔐 CODE EINGEBEN – |x · y| für alle vier Kammern',
+   cells:[
+    {n:'ALPHA',x:'−6',y:'½',f:'|(−6) · ½|',r:3},
+    {n:'BETA',x:'−4',y:'−3/2',f:'|(−4)·(−3/2)|',r:6},
+    {n:'GAMMA',x:'8',y:'−¼',f:'|8 · (−¼)|',r:2},
+    {n:'DELTA',x:'−3',y:'7/3',f:'|(−3) · 7/3|',r:7},
+   ],
+   code:'3627',
+   hints:['💡 ALPHA: (−6)·½=−3→3. BETA: (−4)·(−3/2)=+6 (Minus·Minus=Plus!)','💡 GAMMA: 8·(−¼)=−2→2. DELTA: (−3)·(7/3)=−21/3=−7→7.','💡 Ergebnisse: 3,6,2,7 → Code: 3627']}
+ ],finalCode:'16',fHint:'💡 Letzte Ziffern: Code1=...6, Code2=...3, Code3=...7 → 6+3+7 = 16'},
+
+E:{label:'E',lc:'e',stations:[
+  {fmt:'sort',icon:'🧭',title:'NAVIGATIONSSYSTEM',
+   story:'Vier Transmitter senden ihre Koordinaten als Brüche – aber in falscher Reihenfolge! Sortiere die Koordinaten von der kleinsten zur größten. Die Transmitter-Nummern in sortierter Reihenfolge bilden den Code.',
+   tnote:'ℹ️ Wandle alle Brüche in Dezimalzahlen um, sortiere sie, und schreibe die Nummern (1–4) in der richtigen Reihenfolge.',
+   clbl:'🔐 CODE EINGEBEN – Nummern in sortierter Reihenfolge',
+   items:[
+    {lbl:'①',n:'1',frac:'−5/2',dec:-2.5},
+    {lbl:'②',n:'2',frac:'3/4',dec:0.75},
+    {lbl:'③',n:'3',frac:'−3/4',dec:-0.75},
+    {lbl:'④',n:'4',frac:'7/4',dec:1.75},
+   ],
+   code:'1324',
+   hints:['💡 Rechne um: −5/2=−2,5 | 3/4=0,75 | −3/4=−0,75 | 7/4=1,75','💡 Reihenfolge von klein nach groß: −2,5 < −0,75 < 0,75 < 1,75','💡 Das sind Transmitter ①③②④ → schreibe die Nummern: 1,3,2,4 → Code: 1324']},
+  {fmt:'chain',icon:'⚡',title:'ANTRIEBSSYSTEM',
+   story:'Dr. Nova hinterließ eine mehrstufige Kettenberechnung für das Quantentriebwerk. Jedes Zwischenergebnis wird – mit Vorzeichen! – sofort für den nächsten Schritt verwendet.',
+   tnote:'ℹ️ Wichtig: Für Folgeberechnungen immer den Wert MIT Vorzeichen nehmen, nicht den Betrag. Nur als Code-Ziffer nimmst du den Betrag.',
+   clbl:'🔐 CODE EINGEBEN – Ziffern W₁ bis W₄',
+   steps:[
+    {e:'⚛️',t:'Berechne zuerst <strong>W₀ = (−3/2) + (1/2)</strong>. Dann sofort: <strong>W₁ = W₀ · (−5)</strong>',q:'W₁ = ?',z:'Ziffer 1',linked:false},
+    {e:'🔗',t:'Berechne <strong>W₂ = W₁ + (−8)</strong>',q:'W₂ = ? → Betrag als Ziffer',z:'Ziffer 2',linked:true},
+    {e:'⚡',t:'Berechne <strong>W₃ = W₂ · (−2)</strong> – Vorzeichen von W₂ beibehalten!',q:'W₃ = ?',z:'Ziffer 3',linked:true},
+    {e:'🌀',t:'Berechne <strong>W₄ = W₃ ÷ (−3/2)</strong>',q:'W₄ = ? → Betrag als Ziffer',z:'Ziffer 4',linked:true},
+   ],
+   code:'5364',
+   hints:['💡 W₀=(−3/2)+(1/2)=−1. Dann W₁=(−1)·(−5)=5. Minus·Minus=Plus!','💡 W₂=5+(−8)=−3, Betrag=3. Für W₃ nutze W₂=−3 (mit Vorzeichen!): (−3)·(−2)=6.','💡 W₄=6÷(−3/2)=6·(−2/3)=−4, Betrag=4 → Lösungen: 5,3,6,4 → Code: 5364']},
+  {fmt:'cipher',icon:'🔋',title:'ENERGIESYSTEM',
+   story:'Die Quantenreaktor-Zellen verwenden komplexe Bruchkoordinaten. Berechne |x · y| für jede Zelle.',
+   tnote:'ℹ️ Tipp: Kürze Brüche vor dem Multiplizieren. Achte sorgfältig auf die Vorzeichen!',
+   clbl:'🔐 CODE EINGEBEN – |x · y| für alle vier Zellen',
+   cells:[
+    {n:'ALPHA',x:'−3/4',y:'−8',f:'|(−3/4)·(−8)|',r:6},
+    {n:'BETA',x:'−2/3',y:'−9/2',f:'|(−2/3)·(−9/2)|',r:3},
+    {n:'GAMMA',x:'3/4',y:'−8/3',f:'|(3/4)·(−8/3)|',r:2},
+    {n:'DELTA',x:'−7/6',y:'−6',f:'|(−7/6)·(−6)|',r:7},
+   ],
+   code:'6327',
+   hints:['💡 ALPHA: (−3/4)·(−8)=24/4=6. Minus·Minus=Plus! BETA: (−2/3)·(−9/2)=18/6=3.','💡 GAMMA: (3/4)·(−8/3)=−24/12=−2→Betrag=2. DELTA: (−7/6)·(−6)=42/6=7.','💡 Ergebnisse: 6,3,2,7 → Code: 6327']}
+ ],finalCode:'15',fHint:'💡 Letzte Ziffern: Code1=...4, Code2=...4, Code3=...7 → 4+4+7 = 15'}
+};
+
+// ══════════════════════════════════════
+//  STATE
+// ══════════════════════════════════════
+let G={level:null,solved:[false,false,false],hints:[0,0,0],lhints:0,tries:[0,0,0],t0:null,timer:null};
+
+// ══════════════════════════════════════
+//  SCREEN TRANSITION
+// ══════════════════════════════════════
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active','fade-in'));
+  const el=document.getElementById(id);
+  el.classList.add('active','fade-in');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// ══════════════════════════════════════
+//  START GAME
+// ══════════════════════════════════════
+function startGame(lvl){
+  G={level:lvl,solved:[false,false,false],hints:[0,0,0],lhints:0,tries:[0,0,0],t0:Date.now(),timer:null};
+  G.timer=setInterval(tick,1000);
+  const d=D[lvl];
+  const hl=document.getElementById('hud-lvl');
+  hl.textContent=lvl; hl.className=d.lc;
+  // populate
+  for(let n=1;n<=3;n++){
+    const st=d.stations[n-1];
+    document.getElementById('story'+n).innerHTML=st.story;
+    document.getElementById('fmt'+n).innerHTML=fmtBadge(st.fmt);
+    document.getElementById('tasks'+n).innerHTML=renderTasks(st);
+    document.getElementById('tnote'+n).innerHTML=st.tnote;
+    document.getElementById('clbl'+n).textContent=st.clbl;
+    for(let i=1;i<=4;i++){const el=document.getElementById(`d${n}_${i}`);if(el){el.value='';el.className='digit';}}
+    const fb=document.getElementById('fb'+n);fb.className='feedback';fb.innerHTML='';
+    const hb=document.getElementById('hb'+n);hb.textContent='💡 Tipp';hb.disabled=false;
+    const hbox=document.getElementById('hbox'+n);hbox.style.display='none';hbox.innerHTML='';
+  }
+  // reset cards
+  for(let n=1;n<=3;n++){
+    const c=document.getElementById('card'+n);
+    c.className='scard glass'+(n===1?' active':' locked');
+    const body=document.getElementById('body'+n);
+    body.className='scard-body'+(n===1?' open':'');
+    document.getElementById('tog'+n).className='scard-tog'+(n===1?' open':'');
+  }
+  document.getElementById('stat1').textContent='AKTIV – Rätsel lösen';
+  document.getElementById('stat2').textContent='GESPERRT – Navigation zuerst lösen';
+  document.getElementById('stat3').textContent='GESPERRT – Antrieb zuerst lösen';
+  document.getElementById('area-launch').classList.remove('vis');
+  document.getElementById('lc1').value='';document.getElementById('lc2').value='';
+  document.getElementById('fbl').className='feedback';
+  document.getElementById('hboxl').style.display='none';
+  updateDots();
+  showScreen('screen-game');
+}
+
+// ══════════════════════════════════════
+//  FORMAT BADGE
+// ══════════════════════════════════════
+function fmtBadge(f){
+  const m={chain:['🔗 KETTENPUZZLE','fmt-chain'],error:['⚠️ FEHLERSUCHE','fmt-error'],cipher:['🔑 KOORDINATEN-CHIFFRE','fmt-cipher'],sort:['📊 SORTIERRÄTSEL','fmt-sort']};
+  const[t,c]=m[f]||['',''];
+  return `<span class="fmt-badge ${c}">${t}</span>`;
+}
+
+// ══════════════════════════════════════
+//  RENDER TASKS
+// ══════════════════════════════════════
+function renderTasks(st){
+  switch(st.fmt){
+    case 'chain': return renderChain(st);
+    case 'error': return renderError(st);
+    case 'cipher': return renderCipher(st);
+    case 'sort': return renderSort(st);
+    default: return '';
+  }
+}
+
+function renderChain(st){
+  let h='<div class="chain-wrap">';
+  st.steps.forEach((s,i)=>{
+    h+=`<div class="chain-step${s.linked?' linked':''}">
+      <div class="step-header">
+        <span class="step-num">${i+1}</span>
+        <span class="step-emoji">${s.e}</span>
+        <span class="step-ziffer">${s.z}</span>
+      </div>
+      <div class="step-text">${s.t}</div>
+      <div class="step-question">❓ ${s.q}</div>
+    </div>`;
+    if(i<st.steps.length-1){
+      const next=st.steps[i+1];
+      h+=`<div class="chain-arrow"><span>${next.linked?'↓ Ergebnis fließt in Schritt '+(i+2)+' ein':'↓'}</span></div>`;
+    }
+  });
+  h+='</div>';return h;
+}
+
+function renderError(st){
+  let h=`<div class="error-note">⚠️ Berechne jeden Ausdruck selbst! Der Computer kann falsch liegen. Gib den <strong>Betrag deines eigenen Ergebnisses</strong> als Ziffer ein.</div><div class="etable">`;
+  st.calcs.forEach((c,i)=>{
+    h+=`<div class="erow" id="er${G.level||''}${i+1}">
+      <div class="erow-top">
+        <div class="erow-label">${c.lbl}</div>
+        <div class="erow-main">
+          <div class="erow-task">${c.task} = ?</div>
+          <div class="erow-computer"><span class="comp-tag">Bordcomputer:</span><span class="comp-val">${c.comp}</span></div>
+          <div class="erow-reveal" id="rev${i+1}"></div>
+        </div>
+        <div class="erow-note">Ziffer ${i+1}</div>
+      </div>
+    </div>`;
+  });
+  h+='</div>';return h;
+}
+
+function renderCipher(st){
+  let h=`<div class="cipher-note">🔑 Formel: Energie = |x · y|. Berechne den <strong>Betrag des Produkts</strong> der beiden Koordinaten.</div><div class="ctable">`;
+  st.cells.forEach((c,i)=>{
+    h+=`<div class="crow">
+      <div class="crow-name">${c.n}</div>
+      <div class="crow-coords">(${c.x} | ${c.y})</div>
+      <div class="crow-formula">${c.f} = ?</div>
+      <div class="crow-note">Ziffer ${i+1}</div>
+    </div>`;
+  });
+  h+='</div>';return h;
+}
+
+function renderSort(st){
+  let h=`<div class="sort-note">📡 Wandle alle vier Koordinaten in Dezimalzahlen um. Sortiere von <strong>kleinster</strong> zu <strong>größter</strong>. Schreibe die Nummern in dieser Reihenfolge als 4-stelligen Code.</div>`;
+  h+='<div class="sort-grid">';
+  st.items.forEach(it=>{h+=`<div class="sort-item"><div class="sort-num">${it.lbl}</div><div class="sort-frac">${it.frac}</div></div>`;});
+  h+='</div>';
+  h+=`<div class="sort-seq"><span>Klein →</span><span class="sort-blank">___</span><span>→</span><span class="sort-blank">___</span><span>→</span><span class="sort-blank">___</span><span>→</span><span class="sort-blank">___</span><span>→ Groß</span></div>`;
+  h+=`<div class="sort-explain">Der Code = die vier Nummern (1, 2, 3 oder 4) in sortierter Reihenfolge hintereinander</div>`;
+  return h;
+}
+
+// ══════════════════════════════════════
+//  TIMER
+// ══════════════════════════════════════
+function tick(){
+  const s=Math.floor((Date.now()-G.t0)/1000);
+  document.getElementById('hud-timer').textContent=p(Math.floor(s/60))+':'+p(s%60);
+}
+function p(n){return String(n).padStart(2,'0')}
+function elapsed(){const s=Math.floor((Date.now()-G.t0)/1000);return p(Math.floor(s/60))+':'+p(s%60)}
+
+// ══════════════════════════════════════
+//  STATION TOGGLE
+// ══════════════════════════════════════
+function toggleS(n){
+  const c=document.getElementById('card'+n);
+  if(c.classList.contains('locked'))return;
+  const b=document.getElementById('body'+n),t=document.getElementById('tog'+n);
+  const o=b.classList.contains('open');
+  b.classList.toggle('open',!o);t.classList.toggle('open',!o);
+}
+
+// ══════════════════════════════════════
+//  CHECK STATION
+// ══════════════════════════════════════
+function checkS(n){
+  const entered=[1,2,3,4].map(i=>document.getElementById(`d${n}_${i}`).value).join('');
+  const st=D[G.level].stations[n-1];
+  const fb=document.getElementById('fb'+n);
+  G.tries[n-1]++;
+  if(entered===st.code){
+    G.solved[n-1]=true;
+    for(let i=1;i<=4;i++)document.getElementById(`d${n}_${i}`).className='digit ok';
+    fb.className='feedback ok';fb.textContent='✅ Richtig! System entsperrt!';
+    // reveal error rows
+    if(st.fmt==='error'){
+      st.calcs.forEach((c,i)=>{
+        const row=document.getElementById(`er${G.level}${i+1}`);
+        const rev=document.getElementById('rev'+(i+1));
+        if(!row||!rev)return;
+        if(c.wrong){row.classList.add('was-wrong');rev.textContent=`❌ Computer lag falsch! Richtig: ${c.right<0?c.right:c.right} → Betrag: ${Math.abs(c.right)}`;}
+        else{row.classList.add('was-right');rev.textContent=`✓ Computer war korrekt (${c.comp})`;}
+      });
+    }
+    const card=document.getElementById('card'+n);
+    card.className='scard glass solved';
+    card.classList.add('unlock-pulse');
+    document.getElementById('stat'+n).textContent='ENTSPERRT ✅';
+    updateDots();
+    setTimeout(()=>{
+      const body=document.getElementById('body'+n);
+      const cs=body.querySelector('.code-section');
+      if(cs)cs.style.opacity='0.4';
+      const ov=document.createElement('div');
+      ov.className='solved-wrap';
+      ov.innerHTML=`<div class="solved-icon">✅</div><div class="solved-code">CODE: ${st.code}</div>`;
+      body.appendChild(ov);
+    },900);
+    setTimeout(()=>{
+      if(n<3){
+        const next=document.getElementById('card'+(n+1));
+        next.className='scard glass active';
+        document.getElementById('stat'+(n+1)).textContent='AKTIV – Rätsel lösen';
+        const nb=document.getElementById('body'+(n+1));
+        nb.classList.add('open');
+        document.getElementById('tog'+(n+1)).classList.add('open');
+        next.scrollIntoView({behavior:'smooth',block:'start'});
+      } else {
+        showLaunch();
+      }
+    },1300);
+  } else {
+    fb.className='feedback err';
+    fb.textContent=`❌ Falscher Code (Versuch ${G.tries[n-1]}). Überprüfe deine Berechnungen!`;
+    for(let i=1;i<=4;i++){
+      const el=document.getElementById(`d${n}_${i}`);
+      el.className='digit err';setTimeout(()=>el.className='digit',500);
+    }
+  }
+}
+
+// ══════════════════════════════════════
+//  HINTS
+// ══════════════════════════════════════
+function showHint(n){
+  const hints=D[G.level].stations[n-1].hints;
+  if(G.hints[n-1]>=hints.length){
+    document.getElementById('hb'+n).textContent='Keine Tipps mehr';
+    document.getElementById('hb'+n).disabled=true;return;
+  }
+  G.hints[n-1]++;
+  const box=document.getElementById('hbox'+n);
+  box.style.display='block';box.innerHTML='';
+  for(let i=0;i<G.hints[n-1];i++){
+    const d=document.createElement('div');d.className='hint-line';d.textContent=hints[i];box.appendChild(d);
+  }
+  if(G.hints[n-1]>=hints.length){
+    document.getElementById('hb'+n).textContent='Alle Tipps';
+    document.getElementById('hb'+n).disabled=true;
+  }
+}
+function showLHint(){
+  document.getElementById('hboxl').style.display='block';
+  document.getElementById('hboxl').textContent=D[G.level].fHint;
+  G.lhints++;
+}
+
+// ══════════════════════════════════════
+//  LAUNCH
+// ══════════════════════════════════════
+function showLaunch(){
+  const d=D[G.level];
+  document.getElementById('lcodes').innerHTML=['NAVIGATION','ANTRIEB','ENERGIE'].map((name,i)=>{
+    const code=d.stations[i].code,last=code.slice(-1),rest=code.slice(0,-1);
+    return`<div class="cchip"><div class="cchip-lbl">${name}</div><div class="cchip-val">${rest}<span class="ld">${last}</span></div></div>`;
+  }).join('');
+  const[l1,l2,l3]=d.stations.map(s=>s.code.slice(-1));
+  document.getElementById('lformula').innerHTML=`<strong>Startcode-Formel:</strong><br>letzte Ziffer Code 1 + letzte Ziffer Code 2 + letzte Ziffer Code 3<br>= <strong>${l1}</strong> + <strong>${l2}</strong> + <strong>${l3}</strong> = ?`;
+  const la=document.getElementById('area-launch');
+  la.classList.add('vis');
+  la.scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+function checkLaunch(){
+  const entered=(document.getElementById('lc1').value||'')+(document.getElementById('lc2').value||'');
+  const correct=D[G.level].finalCode;
+  const fb=document.getElementById('fbl');
+  if(entered===correct){
+    if(G.timer)clearInterval(G.timer);
+    fb.className='feedback ok';fb.textContent='✅ Startcode korrekt! Zündsequenz läuft...';
+    setTimeout(()=>{
+      document.getElementById('s-time').textContent=elapsed();
+      document.getElementById('s-lvl').textContent=G.level;
+      document.getElementById('s-hints').textContent=G.hints.reduce((a,b)=>a+b,0)+G.lhints;
+      showScreen('screen-success');
+      launchConfetti();
+    },1600);
+  } else {
+    fb.className='feedback err';fb.textContent='❌ Falscher Startcode. Überprüfe die Formel!';
+    [document.getElementById('lc1'),document.getElementById('lc2')].forEach(el=>{
+      el.className='digit err';setTimeout(()=>el.className='digit',500);
+    });
+  }
+}
+
+// ══════════════════════════════════════
+//  CONFETTI
+// ══════════════════════════════════════
+function launchConfetti(){
+  const cv=document.getElementById('confetti');
+  cv.style.display='block';cv.width=window.innerWidth;cv.height=window.innerHeight;
+  const ctx=cv.getContext('2d');
+  const cols=['#00d4ff','#00ff88','#ffd700','#bb44ff','#ff4466','#ffffff'];
+  const parts=Array.from({length:180},()=>({
+    x:Math.random()*cv.width,y:-20,
+    vx:(Math.random()-0.5)*8,vy:Math.random()*5+2,
+    w:Math.random()*10+4,h:Math.random()*5+3,
+    rot:Math.random()*360,rs:(Math.random()-0.5)*12,
+    col:cols[Math.floor(Math.random()*cols.length)],op:1
+  }));
+  let frame=0;
+  function draw(){
+    ctx.clearRect(0,0,cv.width,cv.height);
+    parts.forEach(p=>{
+      p.x+=p.vx;p.y+=p.vy;p.vy+=0.12;p.rot+=p.rs;p.op-=0.004;
+      if(p.op<=0)return;
+      ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.rot*Math.PI/180);
+      ctx.globalAlpha=p.op;ctx.fillStyle=p.col;
+      ctx.fillRect(-p.w/2,-p.h/2,p.w,p.h);ctx.restore();
+    });
+    if(++frame<320)requestAnimationFrame(draw);else cv.style.display='none';
+  }
+  draw();
+}
+
+// ══════════════════════════════════════
+//  PROGRESS DOTS
+// ══════════════════════════════════════
+function updateDots(){
+  for(let n=1;n<=3;n++){
+    const d=document.getElementById('dot'+n);
+    if(G.solved[n-1])d.className='pdot done';
+    else if(n===1||G.solved[n-2])d.className='pdot active';
+    else d.className='pdot';
+  }
+}
+
+// ══════════════════════════════════════
+//  INPUT HELPERS
+// ══════════════════════════════════════
+function nd(el,nid){
+  el.value=el.value.replace(/[^0-9]/g,'').slice(-1);
+  if(el.value&&nid)document.getElementById(nid)?.focus();
+}
+function kd(e,el,pid,sn){
+  if(e.key==='Backspace'&&!el.value&&pid){
+    const p=document.getElementById(pid);if(p){p.value='';p.focus();}
+  }
+  if(e.key==='Enter'){
+    if(sn==='l')checkLaunch();
+    else checkS(parseInt(sn));
+  }
+}
+function restart(){if(G.timer)clearInterval(G.timer);showScreen('screen-intro')}
+</script>
+</body>
+</html>

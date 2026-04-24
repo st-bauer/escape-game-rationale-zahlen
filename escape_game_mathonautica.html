@@ -166,6 +166,31 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);min-hei
 /* ─── SORT FORMAT ─── */
 .sort-note{background:rgba(255,215,0,.07);border:1px solid rgba(255,215,0,.25);border-radius:8px;padding:10px 14px;margin-bottom:16px;font-size:.82rem;color:var(--yellow);line-height:1.6}
 .sort-grid{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:18px}
+
+/* ─── BALANCE FORMAT ─── */
+.fmt-balance{background:rgba(0,255,136,.1);color:var(--green);border:1px solid rgba(0,255,136,.3)}
+.balance-note{background:rgba(0,255,136,.07);border:1px solid rgba(0,255,136,.25);border-radius:8px;padding:10px 14px;margin-bottom:16px;font-size:.82rem;color:var(--green);line-height:1.6}
+.balance-wrap{display:flex;flex-direction:column;gap:10px}
+.brow{background:rgba(255,255,255,.025);border-radius:10px;padding:13px 16px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;border-left:3px solid rgba(0,255,136,.2)}
+.brow-num{font-family:var(--font-head);font-size:.7rem;color:var(--yellow);min-width:22px;flex-shrink:0}
+.bpan{background:rgba(0,212,255,.06);border:1px solid rgba(0,212,255,.25);border-radius:8px;padding:9px 16px;font-size:.92rem;text-align:center;flex:1;min-width:90px}
+.bpan.unknown{background:rgba(255,215,0,.07);border:2px dashed rgba(255,215,0,.45);color:var(--yellow);font-family:var(--font-head);font-size:1.1rem;letter-spacing:2px}
+.beq{font-size:1.5rem;flex-shrink:0}
+.brow-note{font-family:var(--font-head);font-size:.62rem;color:var(--dim);white-space:nowrap;margin-left:auto;flex-shrink:0}
+
+/* ─── NUMLINE FORMAT ─── */
+.fmt-numline{background:rgba(0,212,255,.1);color:var(--cyan);border:1px solid rgba(0,212,255,.3)}
+.numline-note{background:rgba(0,212,255,.07);border:1px solid rgba(0,212,255,.25);border-radius:8px;padding:10px 14px;margin-bottom:14px;font-size:.82rem;color:var(--cyan);line-height:1.6}
+.nl-wrap{overflow-x:auto;margin-bottom:6px}
+.nl-scene{position:relative;height:100px;min-width:280px;margin:10px 18px 36px}
+.nl-line{position:absolute;top:55px;left:0;right:0;height:2px;background:linear-gradient(90deg,rgba(0,212,255,.1),var(--cyan) 5%,var(--cyan) 95%,rgba(0,212,255,.1))}
+.nl-line::after{content:'▶';position:absolute;right:-14px;top:-9px;font-size:13px;color:var(--cyan)}
+.nl-tick{position:absolute;background:rgba(0,212,255,.35);width:1px;transform:translateX(-50%)}
+.nl-tick.major{background:var(--cyan);width:2px}
+.nl-lbl{position:absolute;font-family:var(--font-head);font-size:.6rem;color:var(--dim);transform:translateX(-50%);white-space:nowrap;top:70px}
+.nl-marker{position:absolute;transform:translateX(-50%);top:26px;display:flex;flex-direction:column;align-items:center}
+.nl-dot{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.8rem;font-family:var(--font-head);font-weight:700;border:2px solid;box-shadow:0 0 10px rgba(0,0,0,.4)}
+.nl-sort-hint{display:flex;align-items:center;gap:7px;flex-wrap:wrap;padding:8px 2px;font-size:.78rem;color:var(--dim)}
 .sort-item{background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:10px;padding:14px 18px;text-align:center;min-width:100px;transition:border-color .2s}
 .sort-item:hover{border-color:rgba(255,215,0,.4)}
 .sort-num{font-size:1.6rem;line-height:1}
@@ -235,6 +260,24 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);min-hei
 /* ─── CONFETTI CANVAS ─── */
 #confetti{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:9999;display:none}
 
+/* ─── MUTE BUTTON ─── */
+.btn-mute{background:transparent;border:1px solid var(--border);border-radius:6px;padding:3px 8px;cursor:pointer;font-size:.9rem;color:var(--dim);transition:border-color .2s,color .2s;line-height:1.4;margin-left:4px}
+.btn-mute:hover{border-color:var(--cyan);color:var(--cyan)}
+
+/* ─── TIMER WARNING ─── */
+#hud-timer.warn{color:var(--orange)!important}
+#hud-timer.danger{color:var(--red)!important;animation:blink 1s ease infinite}
+
+/* ─── TIME-OVER OVERLAY ─── */
+#time-overlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;z-index:600;background:rgba(3,3,16,.93);align-items:center;justify-content:center;padding:20px}
+#time-overlay.vis{display:flex;animation:fadeUp .4s ease}
+.to-card{padding:40px 32px;text-align:center;max-width:460px;width:100%;border:1px solid rgba(255,68,102,.4);box-shadow:0 0 50px rgba(255,68,102,.1)}
+.to-title{font-family:var(--font-head);font-size:1.5rem;color:var(--red);letter-spacing:3px;margin:16px 0 10px}
+.to-msg{line-height:1.85;margin-bottom:22px;font-size:.9rem;color:var(--text)}
+.to-stats{display:flex;gap:28px;justify-content:center;margin-bottom:24px}
+.to-stat-val{font-family:var(--font-head);font-size:1.6rem;color:var(--cyan)}
+.to-stat-lbl{font-size:.7rem;color:var(--dim);letter-spacing:1px;margin-top:3px}
+
 @media(max-width:580px){
   .crow{grid-template-columns:70px 90px 1fr}
   .crow-note{display:none}
@@ -249,6 +292,20 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);min-hei
 <div class="nebula" style="width:500px;height:500px;background:rgba(150,30,255,1);bottom:10%;right:-10%;--d:38s;--tx:-70px;--ty:-40px"></div>
 <div class="nebula" style="width:400px;height:400px;background:rgba(0,60,180,1);top:55%;left:35%;--d:44s;--tx:40px;--ty:60px"></div>
 <canvas id="confetti"></canvas>
+
+<!-- ═══════ TIME OVER ═══════ -->
+<div id="time-overlay">
+  <div class="to-card glass">
+    <div style="font-size:3rem">⏰</div>
+    <div class="to-title">ZEITLIMIT ERREICHT</div>
+    <p class="to-msg">Die <strong style="color:var(--red)">Mathonautica</strong> konnte nicht gerettet werden. Die 45 Minuten sind abgelaufen – das Schiff treibt weiter ins Dunkel des Alls.</p>
+    <div class="to-stats">
+      <div class="to-stat"><div class="to-stat-val" id="to-solved">–</div><div class="to-stat-lbl">ENTSPERRT</div></div>
+      <div class="to-stat"><div class="to-stat-val" id="to-lvl">–</div><div class="to-stat-lbl">NIVEAU</div></div>
+    </div>
+    <button class="btn-restart" onclick="restart()">↩ Erneut versuchen</button>
+  </div>
+</div>
 
 <!-- ═══════ INTRO ═══════ -->
 <div id="screen-intro" class="screen active">
@@ -310,22 +367,23 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);min-hei
     <span style="font-size:1rem">⏱</span>
     <span id="hud-timer">00:00</span>
     <span id="hud-lvl" class="m">M</span>
+    <button id="mute-btn" class="btn-mute" onclick="toggleMute()" title="Ton an/aus">🔊</button>
     <div class="prog-wrap">
-      Systeme <span class="pdot" id="dot1"></span><span class="pdot" id="dot2"></span><span class="pdot" id="dot3"></span>
+      Systeme <span class="pdot" id="dot1"></span><span class="pdot" id="dot2"></span><span class="pdot" id="dot3"></span><span class="pdot" id="dot4"></span><span class="pdot" id="dot5"></span>
     </div>
   </div>
   <div class="gcontent">
     <div class="briefing glass">
       <div class="briefing-title">📡 MISSIONSSTATUS</div>
-      <p>Drei Systeme sind gesperrt. Jede Station nutzt ein anderes Rätselformat – lies die Aufgaben sorgfältig!</p>
+      <p>Fünf Systeme sind gesperrt. Jede Station nutzt ein anderes Rätselformat – lies die Aufgaben sorgfältig!</p>
     </div>
 
     <!-- ── STATION 1 ── -->
     <div class="scard glass active" id="card1">
       <div class="scard-head" onclick="toggleS(1)">
-        <span class="scard-icon">🧭</span>
+        <span class="scard-icon" id="sicon1">📡</span>
         <div class="scard-info">
-          <div class="scard-title">NAVIGATIONSSYSTEM</div>
+          <div class="scard-title" id="stitle1">SENSORNETZ</div>
           <div class="scard-status"><span class="status-dot"></span><span id="stat1">AKTIV – Rätsel lösen</span></div>
         </div>
         <span class="scard-tog open" id="tog1">▼</span>
@@ -356,9 +414,9 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);min-hei
     <!-- ── STATION 2 ── -->
     <div class="scard glass locked" id="card2">
       <div class="scard-head" onclick="toggleS(2)">
-        <span class="scard-icon">⚡</span>
+        <span class="scard-icon" id="sicon2">🧭</span>
         <div class="scard-info">
-          <div class="scard-title">ANTRIEBSSYSTEM</div>
+          <div class="scard-title" id="stitle2">NAVIGATIONSSYSTEM</div>
           <div class="scard-status"><span class="status-dot"></span><span id="stat2">GESPERRT – Navigation zuerst lösen</span></div>
         </div>
         <span class="scard-tog" id="tog2">▼</span>
@@ -389,9 +447,9 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);min-hei
     <!-- ── STATION 3 ── -->
     <div class="scard glass locked" id="card3">
       <div class="scard-head" onclick="toggleS(3)">
-        <span class="scard-icon">🔋</span>
+        <span class="scard-icon" id="sicon3">⚡</span>
         <div class="scard-info">
-          <div class="scard-title">ENERGIESYSTEM</div>
+          <div class="scard-title" id="stitle3">ANTRIEBSSYSTEM</div>
           <div class="scard-status"><span class="status-dot"></span><span id="stat3">GESPERRT – Antrieb zuerst lösen</span></div>
         </div>
         <span class="scard-tog" id="tog3">▼</span>
@@ -419,6 +477,72 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);min-hei
       </div>
     </div>
 
+    <!-- ── STATION 4 ── -->
+    <div class="scard glass locked" id="card4">
+      <div class="scard-head" onclick="toggleS(4)">
+        <span class="scard-icon" id="sicon4">🔋</span>
+        <div class="scard-info">
+          <div class="scard-title" id="stitle4">ENERGIESYSTEM</div>
+          <div class="scard-status"><span class="status-dot"></span><span id="stat4">GESPERRT – Energie zuerst lösen</span></div>
+        </div>
+        <span class="scard-tog" id="tog4">▼</span>
+      </div>
+      <div class="scard-body" id="body4">
+        <div class="st-story" id="story4"></div>
+        <div id="fmt4"></div>
+        <div id="tasks4"></div>
+        <div class="task-note" id="tnote4"></div>
+        <div class="code-section">
+          <div class="code-lbl" id="clbl4">🔐 CODE EINGEBEN</div>
+          <div class="digit-row">
+            <input class="digit" maxlength="1" id="d4_1" oninput="nd(this,'d4_2')" onkeydown="kd(event,this,null,'4')">
+            <input class="digit" maxlength="1" id="d4_2" oninput="nd(this,'d4_3')" onkeydown="kd(event,this,'d4_1','4')">
+            <input class="digit" maxlength="1" id="d4_3" oninput="nd(this,'d4_4')" onkeydown="kd(event,this,'d4_2','4')">
+            <input class="digit" maxlength="1" id="d4_4" oninput="nd(this,null)" onkeydown="kd(event,this,'d4_3','4')">
+          </div>
+          <div class="btn-row">
+            <button class="btn-unlock" onclick="checkS(4)">🔓 Entsperren</button>
+            <button class="btn-hint" id="hb4" onclick="showHint(4)">💡 Tipp</button>
+          </div>
+          <div class="feedback" id="fb4"></div>
+          <div class="hints-box" id="hbox4"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── STATION 5 ── -->
+    <div class="scard glass locked" id="card5">
+      <div class="scard-head" onclick="toggleS(5)">
+        <span class="scard-icon" id="sicon5">🛡️</span>
+        <div class="scard-info">
+          <div class="scard-title" id="stitle5">SCHUTZSCHILDSYSTEM</div>
+          <div class="scard-status"><span class="status-dot"></span><span id="stat5">GESPERRT – Schild zuerst lösen</span></div>
+        </div>
+        <span class="scard-tog" id="tog5">▼</span>
+      </div>
+      <div class="scard-body" id="body5">
+        <div class="st-story" id="story5"></div>
+        <div id="fmt5"></div>
+        <div id="tasks5"></div>
+        <div class="task-note" id="tnote5"></div>
+        <div class="code-section">
+          <div class="code-lbl" id="clbl5">🔐 CODE EINGEBEN</div>
+          <div class="digit-row">
+            <input class="digit" maxlength="1" id="d5_1" oninput="nd(this,'d5_2')" onkeydown="kd(event,this,null,'5')">
+            <input class="digit" maxlength="1" id="d5_2" oninput="nd(this,'d5_3')" onkeydown="kd(event,this,'d5_1','5')">
+            <input class="digit" maxlength="1" id="d5_3" oninput="nd(this,'d5_4')" onkeydown="kd(event,this,'d5_2','5')">
+            <input class="digit" maxlength="1" id="d5_4" oninput="nd(this,null)" onkeydown="kd(event,this,'d5_3','5')">
+          </div>
+          <div class="btn-row">
+            <button class="btn-unlock" onclick="checkS(5)">🔓 Entsperren</button>
+            <button class="btn-hint" id="hb5" onclick="showHint(5)">💡 Tipp</button>
+          </div>
+          <div class="feedback" id="fb5"></div>
+          <div class="hints-box" id="hbox5"></div>
+        </div>
+      </div>
+    </div>
+
     <!-- ── LAUNCH ── -->
     <div id="area-launch" class="glass">
       <div class="launch-title">🚀 STARTSEQUENZ</div>
@@ -442,7 +566,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);min-hei
 <div id="screen-success" class="screen">
   <div class="succ-ship">🚀</div>
   <h2 class="succ-title">MISSION ERFÜLLT!</h2>
-  <p class="succ-msg">Die Mathonautica ist gestartet! Alle drei Systeme entsperrt – ausgezeichnete Arbeit, Crew!</p>
+  <p class="succ-msg">Die Mathonautica ist gestartet! Alle fünf Systeme entsperrt – ausgezeichnete Arbeit, Crew!</p>
   <div class="stats-box glass">
     <div class="stat-row">
       <div class="stat"><div class="stat-val" id="s-time">–</div><div class="stat-lbl">ZEIT</div></div>
@@ -522,8 +646,28 @@ M:{label:'M',lc:'m',stations:[
     {n:'DELTA',x:'−5',y:'1',f:'|(−5) · 1|',r:5},
    ],
    code:'6895',
-   hints:['💡 ALPHA: (−3)·2=−6 → Betrag=6. BETA: 4·(−2)=−8 → Betrag=8.','💡 GAMMA: Minus·Minus=Plus! (−3)·(−3)=+9. DELTA: (−5)·1=−5 → Betrag=5.','💡 Ergebnisse: 6,8,9,5 → Code: 6895']}
- ],finalCode:'20',fHint:'💡 Letzte Ziffern: Code1=...7, Code2=...8, Code3=...5 → 7+8+5 = 20'},
+   hints:['💡 ALPHA: (−3)·2=−6 → Betrag=6. BETA: 4·(−2)=−8 → Betrag=8.','💡 GAMMA: Minus·Minus=Plus! (−3)·(−3)=+9. DELTA: (−5)·1=−5 → Betrag=5.','💡 Ergebnisse: 6,8,9,5 → Code: 6895']},
+  {fmt:'balance',icon:'🛡️',title:'SCHUTZSCHILDSYSTEM',
+   story:'Crewmitglied Tara Stern kalibriert die Schutzschildzellen der <strong>Mathonautica</strong>. Nur bei exaktem Gleichgewicht hält das Schutzfeld – berechne den fehlenden Wert auf jeder Waage!',
+   tnote:'ℹ️ Berechne die linke Seite. Das Ergebnis = der gesuchte Wert (?). Ist das Ergebnis negativ → <strong>Betrag</strong> als Ziffer.',
+   clbl:'🔐 CODE EINGEBEN – Beträge der fehlenden Schildwerte',
+   scales:[
+    {lbl:'a)',expr:'(−2) + 8',note:'Ziffer 1'},
+    {lbl:'b)',expr:'9 + (−6)',note:'Ziffer 2'},
+    {lbl:'c)',expr:'(−5) + (−2)',note:'Ziffer 3 → Betrag!'},
+    {lbl:'d)',expr:'(−4) + 8',note:'Ziffer 4'},
+   ],
+   code:'6374',
+   hints:['💡 a) (−2)+8=6. b) 9+(−6)=3. Vorzeichen beachten!','💡 c) (−5)+(−2)=−7 → Betrag=7. d) (−4)+8=4.','💡 Alle Beträge: 6, 3, 7, 4 → Code: 6374']},
+  {fmt:'numline',icon:'📡',title:'SENSORNETZ',
+   story:'Systemstart! Bevor ein einziges Triebwerk zündet, muss das Sensornetz kalibriert werden. Navigatorin Dr. <strong>Kira Nova</strong> hat vier Asteroiden mit Markern auf der Raumachse gesichert – doch die Frequenz lässt sich nur bei korrekter Sortierung freischalten.',
+   tnote:'ℹ️ Lies die Position jedes Markers auf der Zahlengerade ab. Jeder Strich = 1 Einheit. Sortiere ①②③④ von der kleinsten zur größten Zahl.',
+   clbl:'🔐 CODE EINGEBEN – Markernummern von Klein → Groß',
+   nl:{min:-5,max:5,step:1,labelStep:1,
+     markers:[{n:'①',val:3},{n:'②',val:-4},{n:'③',val:1},{n:'④',val:-2}]},
+   code:'2431',
+   hints:['💡 Zähle ab dem Nullpunkt: rechts = positive Zahlen, links = negative. Jeder Strich = 1 Einheit. Wo liegen ③ und ④?','💡 ① liegt 3 Schritte rechts von 0: Position +3. ② liegt 4 Schritte links: −4. Bestimme auch ③ (+1) und ④ (−2).','💡 Alle Positionen: ①=+3, ②=−4, ③=+1, ④=−2. Sortiert: −4<−2<+1<+3 → ②④③① → Code: 2431']}
+ ],finalCode:'25',fHint:'💡 Letzte Ziffern: 1+7+8+5+4 = 25'},
 
 R:{label:'R',lc:'r',stations:[
   {fmt:'chain',icon:'🧭',title:'NAVIGATIONSSYSTEM',
@@ -561,8 +705,28 @@ R:{label:'R',lc:'r',stations:[
     {n:'DELTA',x:'−3',y:'7/3',f:'|(−3) · 7/3|',r:7},
    ],
    code:'3627',
-   hints:['💡 ALPHA: (−6)·½=−3→3. BETA: (−4)·(−3/2)=+6 (Minus·Minus=Plus!)','💡 GAMMA: 8·(−¼)=−2→2. DELTA: (−3)·(7/3)=−21/3=−7→7.','💡 Ergebnisse: 3,6,2,7 → Code: 3627']}
- ],finalCode:'16',fHint:'💡 Letzte Ziffern: Code1=...6, Code2=...3, Code3=...7 → 6+3+7 = 16'},
+   hints:['💡 ALPHA: (−6)·½=−3→3. BETA: (−4)·(−3/2)=+6 (Minus·Minus=Plus!)','💡 GAMMA: 8·(−¼)=−2→2. DELTA: (−3)·(7/3)=−21/3=−7→7.','💡 Ergebnisse: 3,6,2,7 → Code: 3627']},
+  {fmt:'balance',icon:'🛡️',title:'SCHUTZSCHILDSYSTEM',
+   story:'Mechaniker Zara Flux justiert die Schildreaktoren mit Dezimalwerten. Jede Waage muss im Gleichgewicht sein – berechne den fehlenden Schub! Achtung: Vorzeichen können das Gleichgewicht kippen.',
+   tnote:'ℹ️ Berechne die linke Seite. Der fehlende Wert (?) = dieses Ergebnis. Negatives Ergebnis → <strong>Betrag</strong> als Ziffer.',
+   clbl:'🔐 CODE EINGEBEN – Beträge der Schildreaktoren',
+   scales:[
+    {lbl:'a)',expr:'(−1,5) + 5,5',note:'Ziffer 1'},
+    {lbl:'b)',expr:'2,5 + (−8,5)',note:'Ziffer 2 → Betrag!'},
+    {lbl:'c)',expr:'(−3,5) + 2,5',note:'Ziffer 3 → Betrag!'},
+    {lbl:'d)',expr:'3,5 + (−7,5)',note:'Ziffer 4 → Betrag!'},
+   ],
+   code:'4614',
+   hints:['💡 a) (−1,5)+5,5=4. b) 2,5+(−8,5)=−6 → Betrag=6.','💡 c) (−3,5)+2,5=−1 → Betrag=1. d) 3,5+(−7,5)=−4 → Betrag=4.','💡 Alle Beträge: 4, 6, 1, 4 → Code: 4614']},
+  {fmt:'numline',icon:'📡',title:'SENSORNETZ',
+   story:'Erster Schritt: Das Sensornetz hochfahren! Sonde <strong>Kryox-II</strong> hat vier Raumkörper auf der Temperaturgerade geortet. Die Positionen liegen auf halben Einheiten – kalibriere die Frequenz durch korrekte Sortierung.',
+   tnote:'ℹ️ Jeder kleine Zwischenstrich = 0,5 Einheiten. Zähle vom nächsten ganzen Wert aus. Sortiere ①②③④ von klein nach groß.',
+   clbl:'🔐 CODE EINGEBEN – Markernummern von Klein → Groß',
+   nl:{min:-3,max:3,step:0.5,labelStep:1,
+     markers:[{n:'①',val:1.5},{n:'②',val:-2.5},{n:'③',val:-0.5},{n:'④',val:2.5}]},
+   code:'2314',
+   hints:['💡 Die kleinen Striche zeigen halbe Einheiten (0,5). Zähle z.B. von +1 aus einen Strich nach rechts. Wo genau liegen ③ und ④?','💡 ① liegt einen Strich über +1 → +1,5. ② liegt einen Strich unter −2 → −2,5. Bestimme auch ③ (−0,5) und ④ (+2,5).','💡 Alle Positionen: ①=+1,5, ②=−2,5, ③=−0,5, ④=+2,5. Sortiert: −2,5<−0,5<+1,5<+2,5 → ②③①④ → Code: 2314']}
+ ],finalCode:'24',fHint:'💡 Letzte Ziffern: 4+6+3+7+4 = 24'},
 
 E:{label:'E',lc:'e',stations:[
   {fmt:'sort',icon:'🧭',title:'NAVIGATIONSSYSTEM',
@@ -600,8 +764,29 @@ E:{label:'E',lc:'e',stations:[
     {n:'DELTA',x:'−7/6',y:'−6',f:'|(−7/6)·(−6)|',r:7},
    ],
    code:'6327',
-   hints:['💡 ALPHA: (−3/4)·(−8)=24/4=6. Minus·Minus=Plus! BETA: (−2/3)·(−9/2)=18/6=3.','💡 GAMMA: (3/4)·(−8/3)=−24/12=−2→Betrag=2. DELTA: (−7/6)·(−6)=42/6=7.','💡 Ergebnisse: 6,3,2,7 → Code: 6327']}
- ],finalCode:'15',fHint:'💡 Letzte Ziffern: Code1=...4, Code2=...4, Code3=...7 → 4+4+7 = 15'}
+   hints:['💡 ALPHA: (−3/4)·(−8)=24/4=6. Minus·Minus=Plus! BETA: (−2/3)·(−9/2)=18/6=3.','💡 GAMMA: (3/4)·(−8/3)=−24/12=−2→Betrag=2. DELTA: (−7/6)·(−6)=42/6=7.','💡 Ergebnisse: 6,3,2,7 → Code: 6327']},
+  {fmt:'balance',icon:'🛡️',title:'SCHUTZSCHILDSYSTEM',
+   story:'Dr. Mira Chen balanciert die Quantenfelder der Schutzschilde mit Bruchkoordinaten. Nur exaktes Gleichgewicht verhindert einen Feldkollaps. Rechne sorgfältig – Brüche verraten sich beim Vorzeichen!',
+   tnote:'ℹ️ Multipliziere oder addiere die Brüche auf der linken Seite. Ist das Ergebnis negativ → <strong>Betrag</strong> als Ziffer. Kürzen nicht vergessen!',
+   clbl:'🔐 CODE EINGEBEN – Beträge der Quantenfelder',
+   scales:[
+    {lbl:'a)',expr:'(−5/3) · 3',note:'Ziffer 1 → Betrag!'},
+    {lbl:'b)',expr:'(−3/4) · 8',note:'Ziffer 2 → Betrag!'},
+    {lbl:'c)',expr:'(1/2) + (−7/2)',note:'Ziffer 3 → Betrag!'},
+    {lbl:'d)',expr:'(−2/5) · (−10)',note:'Ziffer 4'},
+   ],
+   code:'5634',
+   hints:['💡 a) (−5/3)·3 = −15/3 = −5 → Betrag=5. b) (−3/4)·8 = −24/4 = −6 → Betrag=6.','💡 c) 1/2+(−7/2) = 1/2−7/2 = −6/2 = −3 → Betrag=3. d) (−2/5)·(−10)=20/5=4.','💡 Alle Beträge: 5, 6, 3, 4 → Code: 5634']},
+  {fmt:'numline',icon:'📡',title:'SENSORNETZ',
+   story:'Systeminitialisierung! Die Quantensensoren der <strong>Mathonautica</strong> liefern Bruchzahl-Koordinaten für vier Raumkörper. Dr. <strong>Mira Chen</strong> braucht die exakte Sortierung, um das Netzwerk zu starten. Jeder Strich = ¼.',
+   tnote:'ℹ️ Jeder kleine Strich = ¼. Die Achse zeigt Halbe: 0, ½, 1, 3/2 … Lies die Position als Bruch ab – z.B. ein Strich über ½ ergibt ¾. Dann sortieren.',
+   clbl:'🔐 CODE EINGEBEN – Markernummern von Klein → Groß',
+   nl:{min:-2,max:2,step:0.25,labelStep:0.5,
+     lblMap:{'-2.00':'-2','-1.50':'-³⁄₂','-1.00':'-1','-0.50':'-½','0.00':'0','0.50':'½','1.00':'1','1.50':'³⁄₂','2.00':'2'},
+     markers:[{n:'①',val:-1.25},{n:'②',val:0.75},{n:'③',val:-1.75},{n:'④',val:1.25}]},
+   code:'3124',
+   hints:['💡 Jeder kleine Strich = ¼. Die Beschriftung ½ bedeutet 2/4. Ein Strich darüber = 3/4. Zähle von der nächsten Beschriftung aus. Wo liegen ② und ④?','💡 ③ liegt einen Strich rechts von −2 → −7/4. ① liegt einen Strich rechts von −³⁄₂ → −5/4. Bestimme auch ② und ④.','💡 Alle Positionen: ①=−5/4, ②=+3/4, ③=−7/4, ④=+5/4. Sortiert: −7/4<−5/4<3/4<5/4 → ③①②④ → Code: 3124']}
+ ],finalCode:'23',fHint:'💡 Letzte Ziffern: 4+4+4+7+4 = 23'}
 };
 
 // ══════════════════════════════════════
@@ -623,14 +808,21 @@ function showScreen(id){
 //  START GAME
 // ══════════════════════════════════════
 function startGame(lvl){
-  G={level:lvl,solved:[false,false,false],hints:[0,0,0],lhints:0,tries:[0,0,0],t0:Date.now(),timer:null};
-  G.timer=setInterval(tick,1000);
+  ensureAudio();
   const d=D[lvl];
+  // Numline (index 4) moves to front → new order: [4,0,1,2,3]
+  const reordered=[d.stations[4],d.stations[0],d.stations[1],d.stations[2],d.stations[3]];
+  G={level:lvl,solved:[false,false,false,false,false],hints:[0,0,0,0,0],lhints:0,tries:[0,0,0,0,0],t0:Date.now(),timer:null,stations:reordered};
+  G.timer=setInterval(tick,1000);
   const hl=document.getElementById('hud-lvl');
   hl.textContent=lvl; hl.className=d.lc;
+  document.getElementById('hud-timer').className='';
+  document.getElementById('hud-timer').style.color='';
   // populate
-  for(let n=1;n<=3;n++){
-    const st=d.stations[n-1];
+  for(let n=1;n<=5;n++){
+    const st=G.stations[n-1];
+    document.getElementById('sicon'+n).textContent=st.icon;
+    document.getElementById('stitle'+n).textContent=st.title;
     document.getElementById('story'+n).innerHTML=st.story;
     document.getElementById('fmt'+n).innerHTML=fmtBadge(st.fmt);
     document.getElementById('tasks'+n).innerHTML=renderTasks(st);
@@ -642,7 +834,7 @@ function startGame(lvl){
     const hbox=document.getElementById('hbox'+n);hbox.style.display='none';hbox.innerHTML='';
   }
   // reset cards
-  for(let n=1;n<=3;n++){
+  for(let n=1;n<=5;n++){
     const c=document.getElementById('card'+n);
     c.className='scard glass'+(n===1?' active':' locked');
     const body=document.getElementById('body'+n);
@@ -650,8 +842,10 @@ function startGame(lvl){
     document.getElementById('tog'+n).className='scard-tog'+(n===1?' open':'');
   }
   document.getElementById('stat1').textContent='AKTIV – Rätsel lösen';
-  document.getElementById('stat2').textContent='GESPERRT – Navigation zuerst lösen';
-  document.getElementById('stat3').textContent='GESPERRT – Antrieb zuerst lösen';
+  for(let n=2;n<=5;n++){
+    document.getElementById('stat'+n).textContent=`GESPERRT – ${G.stations[n-2].title} zuerst lösen`;
+  }
+  setAmbient(true);
   document.getElementById('area-launch').classList.remove('vis');
   document.getElementById('lc1').value='';document.getElementById('lc2').value='';
   document.getElementById('fbl').className='feedback';
@@ -664,7 +858,7 @@ function startGame(lvl){
 //  FORMAT BADGE
 // ══════════════════════════════════════
 function fmtBadge(f){
-  const m={chain:['🔗 KETTENPUZZLE','fmt-chain'],error:['⚠️ FEHLERSUCHE','fmt-error'],cipher:['🔑 KOORDINATEN-CHIFFRE','fmt-cipher'],sort:['📊 SORTIERRÄTSEL','fmt-sort']};
+  const m={chain:['🔗 KETTENPUZZLE','fmt-chain'],error:['⚠️ FEHLERSUCHE','fmt-error'],cipher:['🔑 KOORDINATEN-CHIFFRE','fmt-cipher'],sort:['📊 SORTIERRÄTSEL','fmt-sort'],balance:['⚖️ WAAGE-RÄTSEL','fmt-balance'],numline:['📡 ZAHLENSTRAHL','fmt-numline']};
   const[t,c]=m[f]||['',''];
   return `<span class="fmt-badge ${c}">${t}</span>`;
 }
@@ -678,6 +872,8 @@ function renderTasks(st){
     case 'error': return renderError(st);
     case 'cipher': return renderCipher(st);
     case 'sort': return renderSort(st);
+    case 'balance': return renderBalance(st);
+    case 'numline': return renderNumline(st);
     default: return '';
   }
 }
@@ -733,6 +929,54 @@ function renderCipher(st){
   h+='</div>';return h;
 }
 
+function renderNumline(st){
+  const nl=st.nl;
+  const range=nl.max-nl.min;
+  function pct(v){return ((v-nl.min)/range*100).toFixed(3)+'%'}
+  const mCol=['var(--cyan)','var(--yellow)','var(--purple)','var(--orange)'];
+  const mBg=['rgba(0,212,255,.2)','rgba(255,215,0,.2)','rgba(187,68,255,.2)','rgba(255,140,0,.2)'];
+  // ticks + labels
+  let inner='<div class="nl-line"></div>';
+  let v=nl.min;
+  while(v<=nl.max+0.0001){
+    const rv=Math.round(v*10000)/10000;
+    const isMajor=Math.abs(rv/nl.labelStep-Math.round(rv/nl.labelStep))<0.001;
+    const th=isMajor?18:8;const ty=55-th/2;
+    inner+=`<div class="nl-tick${isMajor?' major':''}" style="left:${pct(rv)};top:${ty}px;height:${th}px"></div>`;
+    if(isMajor){
+      const key=rv.toFixed(2);
+      const txt=(nl.lblMap&&nl.lblMap[key])?nl.lblMap[key]:String(rv);
+      inner+=`<div class="nl-lbl" style="left:${pct(rv)}">${txt}</div>`;
+    }
+    v=Math.round((v+nl.step)*100000)/100000;
+  }
+  // markers
+  nl.markers.forEach((m,i)=>{
+    inner+=`<div class="nl-marker" style="left:${pct(m.val)}">
+      <div class="nl-dot" style="background:${mBg[i]};border-color:${mCol[i]};color:${mCol[i]}">${m.n}</div>
+    </div>`;
+  });
+  return `<div class="numline-note">📡 Vier Asteroiden-Marker sind auf der Zahlengerade eingetragen. Bestimme ihre Positionen und sortiere <strong>① ② ③ ④</strong> von <strong>kleinster → größter</strong> Zahl. Die Markernummern in dieser Reihenfolge ergeben den 4-stelligen Code.</div>
+  <div class="nl-wrap"><div class="nl-scene">${inner}</div></div>
+  <div class="nl-sort-hint"><span>Klein →</span>
+    <span class="sort-blank">___</span><span>→</span><span class="sort-blank">___</span><span>→</span><span class="sort-blank">___</span><span>→</span><span class="sort-blank">___</span>
+  <span>→ Groß</span></div>`;
+}
+
+function renderBalance(st){
+  let h=`<div class="balance-note">⚖️ Berechne den Ausdruck auf der <strong>linken Seite</strong>. Das Ergebnis ist der gesuchte Wert <strong>(?)</strong> auf der rechten Seite – die Waage muss im Gleichgewicht sein!</div><div class="balance-wrap">`;
+  st.scales.forEach(s=>{
+    h+=`<div class="brow">
+      <span class="brow-num">${s.lbl}</span>
+      <div class="bpan">${s.expr}</div>
+      <span class="beq">⚖️</span>
+      <div class="bpan unknown">?</div>
+      <span class="brow-note">${s.note}</span>
+    </div>`;
+  });
+  h+='</div>';return h;
+}
+
 function renderSort(st){
   let h=`<div class="sort-note">📡 Wandle alle vier Koordinaten in Dezimalzahlen um. Sortiere von <strong>kleinster</strong> zu <strong>größter</strong>. Schreibe die Nummern in dieser Reihenfolge als 4-stelligen Code.</div>`;
   h+='<div class="sort-grid">';
@@ -748,7 +992,13 @@ function renderSort(st){
 // ══════════════════════════════════════
 function tick(){
   const s=Math.floor((Date.now()-G.t0)/1000);
-  document.getElementById('hud-timer').textContent=p(Math.floor(s/60))+':'+p(s%60);
+  const el=document.getElementById('hud-timer');
+  el.textContent=p(Math.floor(s/60))+':'+p(s%60);
+  const rem=2700-s;
+  if(rem<=60){el.style.color='var(--red)';el.style.animation='blink 1s ease infinite';}
+  else if(rem<=300){el.style.color='var(--orange)';el.style.animation='';}
+  else{el.style.color='var(--cyan)';el.style.animation='';}
+  if(s>=2700&&G.timer)timeOver();
 }
 function p(n){return String(n).padStart(2,'0')}
 function elapsed(){const s=Math.floor((Date.now()-G.t0)/1000);return p(Math.floor(s/60))+':'+p(s%60)}
@@ -769,13 +1019,14 @@ function toggleS(n){
 // ══════════════════════════════════════
 function checkS(n){
   const entered=[1,2,3,4].map(i=>document.getElementById(`d${n}_${i}`).value).join('');
-  const st=D[G.level].stations[n-1];
+  const st=G.stations[n-1];
   const fb=document.getElementById('fb'+n);
   G.tries[n-1]++;
   if(entered===st.code){
     G.solved[n-1]=true;
     for(let i=1;i<=4;i++)document.getElementById(`d${n}_${i}`).className='digit ok';
     fb.className='feedback ok';fb.textContent='✅ Richtig! System entsperrt!';
+    playCorrect();
     // reveal error rows
     if(st.fmt==='error'){
       st.calcs.forEach((c,i)=>{
@@ -801,7 +1052,7 @@ function checkS(n){
       body.appendChild(ov);
     },900);
     setTimeout(()=>{
-      if(n<3){
+      if(n<5){
         const next=document.getElementById('card'+(n+1));
         next.className='scard glass active';
         document.getElementById('stat'+(n+1)).textContent='AKTIV – Rätsel lösen';
@@ -814,6 +1065,7 @@ function checkS(n){
       }
     },1300);
   } else {
+    playWrong();
     fb.className='feedback err';
     fb.textContent=`❌ Falscher Code (Versuch ${G.tries[n-1]}). Überprüfe deine Berechnungen!`;
     for(let i=1;i<=4;i++){
@@ -827,7 +1079,7 @@ function checkS(n){
 //  HINTS
 // ══════════════════════════════════════
 function showHint(n){
-  const hints=D[G.level].stations[n-1].hints;
+  const hints=G.stations[n-1].hints;
   if(G.hints[n-1]>=hints.length){
     document.getElementById('hb'+n).textContent='Keine Tipps mehr';
     document.getElementById('hb'+n).disabled=true;return;
@@ -854,12 +1106,13 @@ function showLHint(){
 // ══════════════════════════════════════
 function showLaunch(){
   const d=D[G.level];
-  document.getElementById('lcodes').innerHTML=['NAVIGATION','ANTRIEB','ENERGIE'].map((name,i)=>{
-    const code=d.stations[i].code,last=code.slice(-1),rest=code.slice(0,-1);
-    return`<div class="cchip"><div class="cchip-lbl">${name}</div><div class="cchip-val">${rest}<span class="ld">${last}</span></div></div>`;
+  document.getElementById('lcodes').innerHTML=G.stations.map(st=>{
+    const code=st.code,last=code.slice(-1),rest=code.slice(0,-1);
+    return`<div class="cchip"><div class="cchip-lbl">${st.title.split(' ')[0]}</div><div class="cchip-val">${rest}<span class="ld">${last}</span></div></div>`;
   }).join('');
-  const[l1,l2,l3]=d.stations.map(s=>s.code.slice(-1));
-  document.getElementById('lformula').innerHTML=`<strong>Startcode-Formel:</strong><br>letzte Ziffer Code 1 + letzte Ziffer Code 2 + letzte Ziffer Code 3<br>= <strong>${l1}</strong> + <strong>${l2}</strong> + <strong>${l3}</strong> = ?`;
+  const digits=G.stations.map(s=>s.code.slice(-1));
+  const [l1,l2,l3,l4,l5]=digits;
+  document.getElementById('lformula').innerHTML=`<strong>Startcode-Formel:</strong><br>Letzte Ziffern aller 5 Codes addieren:<br>= <strong>${l1}</strong> + <strong>${l2}</strong> + <strong>${l3}</strong> + <strong>${l4}</strong> + <strong>${l5}</strong> = ?`;
   const la=document.getElementById('area-launch');
   la.classList.add('vis');
   la.scrollIntoView({behavior:'smooth',block:'start'});
@@ -871,6 +1124,7 @@ function checkLaunch(){
   const fb=document.getElementById('fbl');
   if(entered===correct){
     if(G.timer)clearInterval(G.timer);
+    playLaunch(); setAmbient(false);
     fb.className='feedback ok';fb.textContent='✅ Startcode korrekt! Zündsequenz läuft...';
     setTimeout(()=>{
       document.getElementById('s-time').textContent=elapsed();
@@ -880,6 +1134,7 @@ function checkLaunch(){
       launchConfetti();
     },1600);
   } else {
+    playWrong();
     fb.className='feedback err';fb.textContent='❌ Falscher Startcode. Überprüfe die Formel!';
     [document.getElementById('lc1'),document.getElementById('lc2')].forEach(el=>{
       el.className='digit err';setTimeout(()=>el.className='digit',500);
@@ -921,12 +1176,119 @@ function launchConfetti(){
 //  PROGRESS DOTS
 // ══════════════════════════════════════
 function updateDots(){
-  for(let n=1;n<=3;n++){
+  for(let n=1;n<=5;n++){
     const d=document.getElementById('dot'+n);
     if(G.solved[n-1])d.className='pdot done';
     else if(n===1||G.solved[n-2])d.className='pdot active';
     else d.className='pdot';
   }
+}
+
+// ══════════════════════════════════════
+//  AUDIO
+// ══════════════════════════════════════
+let Ac=null,ambGain=null,audioMuted=false,arpTmr=null;
+function ensureAudio(){
+  if(Ac)return;
+  try{
+    Ac=new(window.AudioContext||window.webkitAudioContext)();
+    ambGain=Ac.createGain();ambGain.gain.value=0;ambGain.connect(Ac.destination);
+
+    // 1) TIEFER PAD-DRONE: triangle-Wellen mit sanften LFOs (warmer Untergrund)
+    [[73.4,0.22],[110,0.14],[147,0.08]].forEach(([f,g])=>{
+      const o=Ac.createOscillator(),gn=Ac.createGain();
+      o.type='triangle';o.frequency.value=f;gn.gain.value=g;
+      const lfo=Ac.createOscillator(),lg=Ac.createGain();
+      lfo.type='sine';lfo.frequency.value=0.07+Math.random()*0.05;lg.gain.value=g*0.25;
+      lfo.connect(lg);lg.connect(gn.gain);lfo.start();
+      o.connect(gn);gn.connect(ambGain);o.start();
+    });
+
+    // 2) MELODIE: D-Moll Pentatonik, langsam, mit Echo-Delay für Raumtiefe
+    //    Noten: D4, F4, G4, A4, C5, D5 — ruhig & mysteriös, passt zum Weltraum-Thema
+    const melG=Ac.createGain();melG.gain.value=0.75;melG.connect(ambGain);
+    const dly=Ac.createDelay(2.0);dly.delayTime.value=0.6;
+    const fb=Ac.createGain();fb.gain.value=0.28;
+    const dlyOut=Ac.createGain();dlyOut.gain.value=0.38;
+    melG.connect(dly);dly.connect(fb);fb.connect(dly);dly.connect(dlyOut);dlyOut.connect(ambGain);
+
+    const seq=[293.7,392,440,349.2,523.3,440,587.3,392,523.3,349.2,440,293.7];
+    let ni=0;
+    function note(){
+      if(!Ac)return;
+      const f=seq[ni%seq.length];ni++;
+      const o=Ac.createOscillator(),g=Ac.createGain();
+      o.type='sine';o.frequency.value=f;
+      const t=Ac.currentTime;
+      g.gain.setValueAtTime(0,t);
+      g.gain.linearRampToValueAtTime(0.10,t+0.25);
+      g.gain.exponentialRampToValueAtTime(0.001,t+3.0);
+      o.connect(g);g.connect(melG);o.start(t);o.stop(t+3.5);
+      arpTmr=setTimeout(note,1800+Math.random()*1200);
+    }
+    setTimeout(note,2500); // erst nach 2,5s einsetzen, damit der Drone zuerst da ist
+
+  }catch(e){Ac=null;}
+}
+function setAmbient(on){
+  if(!Ac||!ambGain)return;
+  ambGain.gain.setTargetAtTime((on&&!audioMuted)?0.07:0,Ac.currentTime,0.8);
+}
+function playCorrect(){
+  if(!Ac||audioMuted)return;
+  [523,659,784].forEach((f,i)=>{
+    const o=Ac.createOscillator(),g=Ac.createGain();
+    o.type='sine';o.frequency.value=f;
+    const t=Ac.currentTime+i*0.13;
+    g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(0.16,t+0.03);
+    g.gain.exponentialRampToValueAtTime(0.001,t+0.4);
+    o.connect(g);g.connect(Ac.destination);o.start(t);o.stop(t+0.4);
+  });
+}
+function playWrong(){
+  if(!Ac||audioMuted)return;
+  const o=Ac.createOscillator(),g=Ac.createGain();
+  o.type='sawtooth';o.frequency.value=220;
+  o.frequency.linearRampToValueAtTime(110,Ac.currentTime+0.35);
+  g.gain.setValueAtTime(0.13,Ac.currentTime);
+  g.gain.exponentialRampToValueAtTime(0.001,Ac.currentTime+0.4);
+  o.connect(g);g.connect(Ac.destination);o.start();o.stop(Ac.currentTime+0.4);
+}
+function playLaunch(){
+  if(!Ac||audioMuted)return;
+  [523,659,784,1046,1318].forEach((f,i)=>{
+    const o=Ac.createOscillator(),g=Ac.createGain();
+    o.type='sine';o.frequency.value=f;
+    const t=Ac.currentTime+i*0.11;
+    g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(0.2,t+0.03);
+    g.gain.exponentialRampToValueAtTime(0.001,t+0.55);
+    o.connect(g);g.connect(Ac.destination);o.start(t);o.stop(t+0.55);
+  });
+}
+function toggleMute(){
+  audioMuted=!audioMuted;
+  if(ambGain) ambGain.gain.setTargetAtTime(audioMuted?0:0.07,Ac?Ac.currentTime:0,0.3);
+  document.getElementById('mute-btn').textContent=audioMuted?'🔇':'🔊';
+}
+
+// ══════════════════════════════════════
+//  TIME OVER
+// ══════════════════════════════════════
+function timeOver(){
+  if(G.timer){clearInterval(G.timer);G.timer=null;}
+  setAmbient(false);
+  if(Ac&&!audioMuted){
+    [330,277,220].forEach((f,i)=>{
+      const o=Ac.createOscillator(),g=Ac.createGain();
+      o.type='square';o.frequency.value=f;
+      const t=Ac.currentTime+i*0.28;
+      g.gain.setValueAtTime(0.1,t);g.gain.exponentialRampToValueAtTime(0.001,t+0.22);
+      o.connect(g);g.connect(Ac.destination);o.start(t);o.stop(t+0.22);
+    });
+  }
+  document.getElementById('to-solved').textContent=G.solved.filter(Boolean).length+'/5';
+  document.getElementById('to-lvl').textContent=G.level;
+  document.getElementById('time-overlay').classList.add('vis');
 }
 
 // ══════════════════════════════════════
@@ -945,7 +1307,12 @@ function kd(e,el,pid,sn){
     else checkS(parseInt(sn));
   }
 }
-function restart(){if(G.timer)clearInterval(G.timer);showScreen('screen-intro')}
+function restart(){
+  if(G.timer)clearInterval(G.timer);
+  setAmbient(false);
+  document.getElementById('time-overlay').classList.remove('vis');
+  showScreen('screen-intro');
+}
 </script>
 </body>
 </html>
